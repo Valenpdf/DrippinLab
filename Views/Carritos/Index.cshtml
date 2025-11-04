@@ -1,0 +1,255 @@
+﻿@model List<Drippin.DTO.CarritoItemDTO>
+@{
+    ViewData["Title"] = "Carrito de Compras";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ajusta si tu Layout está en otro lugar
+}
+
+
+
+
+@{
+    // Generar un número de orden aleatorio simple (4 dígitos)
+    Random random = new Random();
+    string orderNumber = random.Next(1000, 9999).ToString("D4");
+
+    // Placeholder para el nombre del usuario
+    string nombre = User.Identity.Name;
+    string apellido = User.FindFirst("UsApellidoClaim")?.Value ?? string.Empty;
+    string userName = $"{nombre} {apellido}";
+
+}
+
+<style>
+    tr {
+        color: white;
+    }
+
+    th {
+        color: black;
+    }
+
+    btn-eliminar {
+        color: white;
+    }
+
+</style>
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/carrito-style.css" />
+
+
+<div class="container my-5">
+    <div class="contenedor-carrito">
+        
+        <h2 class="titulo-carrito mb-4 text-center">@ViewData["Title"]</h2>
+
+        @if (TempData["Alerta"] != null)
+        {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    @TempData["Alerta"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+        }
+
+        @if (Model == null || !Model.Any())
+        {
+                <div class="alert alert-warning text-center p-4">
+                    <h4 class="alert-heading">¡Tu carrito está vacío!</h4>
+                    <p>Parece que aún no has agregado ningún producto. Navega por nuestra tienda para encontrar tus favoritos.</p>
+                    <hr>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-dark mt-2">
+                        <i class="fa-solid fa-store me-1"></i> Ir a la Tienda
+                    </a>
+                </div>
+        }
+        else
+        {
+            <div class="carrito-lista">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col" class="text-center">Precio</th>
+                            <th scope="col" class="text-center">Subtotal</th>
+                             <th scope="col" class="text-center">Cantidad</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                                <tr>
+                                    <td>
+                                        <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.proId" class="text-decoration-none producto-link">
+                                            <div class="d-flex align-items-center" id="img-producto">
+                                                @* Miniatura de la imagen *@
+                                                <img src="@Url.Content(item.ProImagen)" alt="@item.ProNombre" style="width: 40px; height: 40px; object-fit: cover;" class="me-3 border rounded" />
+                                                <span class="fw-bold">@item.ProNombre</span>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">@item.ProPrecio.ToString("C")</td>
+                                    <td class="text-center">@item.Subtotal.ToString("C")</td>
+                                    <td class="text-center">@item.Cantidad.ToString("")</td>
+                                    <td>
+                                        @* Formulario para eliminar el producto *@
+                                        <form asp-controller="Carritos" asp-action="RemoverDelCarrito" method="post">
+                                            <input type="hidden" name="proId" value="@item.proId" />
+                                                    <button type="submit" class="btn-eliminar btn btn-sm btn-outline-danger" title="Eliminar Producto">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+                
+            <div class="resumen-container" id="ticket-para-descargar">
+
+                <!-- CABECERA ESTILO TICKET -->
+                <div class="text-center mb-4">
+                    <h1 class="drippin-title">DRIPPIN</h1>
+                    <p class="receipt-info">
+                        ORDER #@orderNumber<br />
+                        PARA @userName.ToUpper()
+                    </p>
+                </div>
+
+                <!-- ENCABEZADOS DE COLUMNA Y DIVISOR SUPERIOR -->
+                <hr class="receipt-divider" />
+                <div class="d-flex justify-content-between receipt-header-row">
+                    <!-- COLUMNA 1: IMG (antes QTY) -->
+                    <span class="col-img">IMG</span>
+                    <!-- COLUMNA 2: ITEM (Nombre del Producto) -->
+                    <span class="col-item-name flex-grow-1">ITEM</span>
+                    <!-- COLUMNA 3: PRECIO (antes AMT) -->
+                    <span class="col-price text-end">PRECIO</span>
+                </div>
+                <hr class="receipt-divider" />
+
+                <!-- ITEMS DEL CARRITO -->
+                @foreach (var item in Model)
+                {
+                    <div class="carrito-item d-flex align-items-center mb-3">
+
+                        <!-- IMG -->
+                        <div class="carrito-img me-2">
+                                <img src="@Url.Content(item.ProImagen)" alt="@item.ProNombre" class="img-fluid" />
+                        </div>
+
+                        <!-- DETALLE DEL ITEM -->
+                        <div class="carrito-detalle flex-grow-1">
+                            <span class="fw-bold d-block">@item.ProNombre</span>
+                
+                            @* Muestra la cantidad y el precio unitario si es más de 1 unidad *@
+                            @if (item.Cantidad > 1) {
+                                <small class="d-block">(@item.Cantidad x @item.ProPrecio.ToString("C"))</small>
+                            }
+                        </div>
+
+                        <!-- PRECIO (Muestra el Subtotal) -->
+                        <div class="carrito-precio text-end">
+                            <span>@item.Subtotal.ToString("C")</span>
+                        </div>
+
+                        <!-- BOTÓN DE REMOVER -->
+                    <div data-html2canvas-ignore="true">
+                            <form asp-controller="Carritos" asp-action="RemoverDelCarrito" method="post">
+                                <input type="hidden" name="proId" value="@item.proId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger btn-carrito-remove" title="Eliminar Producto">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div> 
+                    </div>
+
+                }
+                    <!-- DIVISOR INFERIOR -->
+                <hr class="receipt-divider" />
+    
+                <!-- TOTAL GENERAL -->
+                @if (ViewBag.TotalGeneral != null)
+                {
+                        <div class="d-flex justify-content-between receipt-footer-row mt-3">
+                            <span class="fw-bold">TOTAL:</span>
+                            <span class="fw-bold">@((((decimal)ViewBag.TotalGeneral)).ToString("C"))</span>
+                        </div>
+                }
+            </div>
+
+            <div class="d-grid gap-2 mt-4">        
+                <button id="btn-descargar-ticket" type="button" class="btn btn-outline-light">
+                    <i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        // Esto carga los scripts de validación de ASP.NET
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* 1. Importa la librería html2canvas (Este comentario Razor está bien aquí) *@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            
+                const botonDescarga = document.getElementById("btn-descargar-ticket");
+                const ticketElement = document.getElementById("ticket-para-descargar");
+
+                // Verificación (buena práctica)
+                if (!botonDescarga || !ticketElement) {
+                    console.error("No se pudo encontrar el botón de descarga o el elemento del ticket.");
+                    return;
+                }
+
+                botonDescarga.addEventListener("click", function() {
+                
+                    botonDescarga.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Generando...';
+                    botonDescarga.disabled = true;
+
+                    html2canvas(ticketElement, {
+                        backgroundColor: '#000000',
+                        scale: 2,
+                        useCORS: true // ✅ AÑADIDO: Intenta cargar imágenes con CORS
+                    }).then(canvas => {
+                    
+                        /* Crea un enlace temporal <a> para descargar */
+                        const link = document.createElement("a");
+                    
+                        /* Obtiene los datos de la imagen del canvas en formato PNG */
+                        link.href = canvas.toDataURL("image/png");
+                    
+                        /* Define el nombre del archivo (con sintaxis Razor corregida) */
+                        link.download = "ticket-drippin-@(orderNumber).png";
+                    
+                        /* Simula un clic en el enlace para iniciar la descarga */
+                        link.click();
+
+                        /* Restaura el botón (en éxito) */
+                        botonDescarga.innerHTML = '<i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen';
+                        botonDescarga.disabled = false;
+
+                    }).catch(error => {
+                    
+                        // ✅ AÑADIDO: Manejo de errores
+                        console.error("Error al generar el ticket con html2canvas:", error);
+                        alert("Error al generar la imagen. Es posible que haya un problema con las imágenes del producto (CORS). Revisa la consola (F12).");
+
+                        /* Restaura el botón (en error) */
+                        botonDescarga.innerHTML = '<i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen';
+                        botonDescarga.disabled = false;
+                    });
+                });
+            });
+        </script>
+}

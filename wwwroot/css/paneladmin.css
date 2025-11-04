@@ -1,0 +1,103 @@
+
+
+/* Modificación de la clase content-container para que ahora solo limite el ancho interno */
+.content-container.admin-panel-view {
+    max-width: 1200px; /* Limita el ancho del contenido interno, como las tarjetas */
+    margin: 0 auto; /* Centra el contenido */
+    padding: 0 20px; /* Espacio a los lados en pantallas pequeñas */
+}
+
+/* Eliminar el padding que ya no es necesario en el elemento interno */
+.admin-panel-view {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.panel-title {
+    color: #ffffff; /* Título principal en blanco */
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.panel-lead {
+    color: #aaaaaa; /* Mensaje secundario en gris claro */
+    font-size: 1.1em;
+}
+
+.panel-hr {
+    border: 0;
+    height: 1px;
+    background-color: #333333;
+    margin: 30px auto;
+    width: 80px; /* Separador corto y centrado */
+}
+
+/* --- Estilos de la Tarjeta de Administración --- */
+.admin-card {
+    background-color: #1a1a1a; /* Fondo de la tarjeta muy oscuro */
+    border: 1px solid #333333; /* Borde sutil */
+    transition: all 0.3s ease;
+    border-radius: 0; /* Bordes rectos para look minimalista */
+}
+
+    .admin-card:hover {
+        background-color: #2a2a2a; /* Ligeramente más claro al pasar el ratón */
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+
+.shadow-dark {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+.admin-card-title {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.admin-card-text {
+    color: #999999;
+    margin-bottom: 25px;
+}
+
+/* --- Colores de Acento para Iconos --- */
+.text-accent-light {
+    color: #e0e0e0; /* Gris claro/blanco para contraste */
+}
+
+.text-accent-red {
+    color: #ff3333; /* Rojo para acentuar (similar al "Destacado") */
+}
+
+/* --- Botón de Acción (Reutilizando la clase del Index) --- */
+.btn-primary-drippin {
+    background-color: #333333;
+    color: #e0e0e0;
+    padding: 10px 20px;
+    border: 1px solid #555555;
+    text-decoration: none;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    font-weight: 600;
+    letter-spacing: 1px;
+    display: inline-block;
+    width: 80%; /* Botones un poco más anchos */
+}
+
+    .btn-primary-drippin:hover {
+        background-color: #555555;
+        color: #ffffff;
+        border-color: #888888;
+    }
+
+.btn-red-accent {
+    border-color: #ff3333;
+    color: #ff3333;
+    background-color: transparent;
+}
+
+    .btn-red-accent:hover {
+        background-color: #ff3333;
+        color: #0d0d0d; /* Texto negro sobre fondo rojo */
+    }

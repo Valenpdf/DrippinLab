@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Drippin.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index - Productos";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/adminproductos.css" />
+
+<div class="full-width-panel-wrapper">
+
+    <div class="content-container admin-panel-view">
+        <form asp-controller="Productos" asp-action="Index" method="get">
+            <div class="header-actions">
+                <h1>ADMINISTRACIÓN DE PRODUCTOS</h1>
+                <a asp-action="Create" class="btn-primary-drippin">➕ Crear Nuevo Producto</a>
+            </div>
+
+            <div class="search-bar-container">
+                @* Dropdown de Categorías (necesario para que el filtro del controlador funcione) *@
+                <select name="categoriaId" class="filter-dropdown">
+                    <option value="">Todas las Categorías</option>
+                    @if (ViewData["CategoriaId"] is SelectList selectList)
+                    {
+                            @foreach (var categoria in selectList)
+                            {
+                                    <option value="@categoria.Value" 
+                                            selected="@(categoria.Value == (ViewData["CurrentCategoriaId"]?.ToString()))">
+                                        @categoria.Text
+                                    </option>
+
+
+                            }
+                    }
+                </select>
+            
+                @* Input de Búsqueda por Nombre *@
+                <input type="text" 
+                       name="searchString" 
+                       value="@ViewData["CurrentFilter"]" 
+                       placeholder="Buscar productos por nombre..." 
+                       class="search-input" />
+                   
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i> FILTRAR
+                </button>
+                <a asp-action="Index" class="clear-search-link">Limpiar Filtros</a>
+            </div>
+        </form>
+    
+        <hr/>
+
+        ---
+    
+        <div class="products-grid">
+            @foreach (var item in Model)
+            {
+                    <div class="product-card">
+                        <div class="product-image-container">
+
+                            <img src="@Url.Content(item.proImagen)" alt="@item.proNombre" class="product-image"/>
+                        </div>
+                        <div class="product-details">
+                            <h2 class="product-name">@Html.DisplayFor(modelItem => item.proNombre)</h2>
+                            <p class="product-price">$ @Html.DisplayFor(modelItem => item.proPrecio)</p>
+                            <p class="product-availability">
+                                **Disponibilidad:**
+                                <span class="@(item.Disponible ? "available" : "unavailable")">
+                                    @(item.Disponible ? "DISPONIBLE" : "AGOTADO")
+                                </span>
+                            </p>
+                    
+                            <div class="card-actions">
+                                <a asp-action="Edit" asp-route-id="@item.proId" class="btn-secondary-drippin">EDITAR</a>
+                                <a asp-action="Details" asp-route-id="@item.proId" class="btn-secondary-drippin">DETALLES</a>
+                                <a asp-action="Delete" asp-route-id="@item.proId" class="btn-delete-drippin">ELIMINAR</a>
+                            </div>
+                        </div>
+                    </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+                <p class="no-products">No hay productos cargados en el sistema.</p>
+        }
+    </div>
+
+</div>

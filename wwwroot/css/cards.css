@@ -1,0 +1,92 @@
+
+
+/* PRODUCTOS NORMALES */
+
+.card-producto-link {
+    text-decoration: none; /* Eliminar subrayado */
+    color: inherit; /* Mantener color de texto */
+    display: block; /* Ocupar todo el espacio de la cuadrícula */
+}
+
+.card-producto:hover {
+    transform: none; /* Quitar el hover anterior */
+}
+
+.card-producto-link:hover .card-producto {
+    transform: scale(1.02); /* Aplicar el efecto de escala al hacer hover en el enlace */
+}
+
+.contenedor-productos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en mobile */
+    background-color: #121212;
+    justify-content: center;
+    margin: 0;
+    gap: 0;
+}
+
+.card-producto {
+    padding: 10px;
+    color: white;
+    transition: transform 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    /*background-color: black;*/
+}
+
+    .card-producto:hover {
+        transform: scale(1.02);
+    }
+
+
+    .card-producto img {
+        width: 100%; /* Se ajusta al ancho del contenedor */
+        height: auto; /* Mantiene proporción */
+        object-fit: cover; /* Ajuste visual */
+        margin: 0;
+        gap: 0;
+    }
+
+.contenido-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.card-producto .titulo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    font-family: Cascadia Code SemiBold;
+}
+
+.card-producto .precio {
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.boton-card:hover {
+    background-color: #666;
+}
+
+
+/* ///////////////////// */
+
+/* PRODUCTOS NORMALES RESPONSIVE */
+
+@media (min-width: 768px) {
+    .contenedor-productos {
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas en tablet/desktop */
+    }
+}
+
+@media (min-width: 1024px) {
+    .contenedor-productos {
+        grid-template-columns: repeat(5, 1fr); /* 4 columnas en escritorio grande */
+    }
+}
+
+/* ///////////////////// */

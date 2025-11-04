@@ -1,0 +1,144 @@
+﻿@model Drippin.Models.Producto
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+
+<link rel="stylesheet" href="~/css/swiper.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/cards.css" asp-append-version="true" />
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<div class="contenedor-destacado">
+    <!-- Swiper para imágenes del producto -->
+    <div class="swiper swiper-destacado">
+        <div class="swiper-wrapper">
+            @if (!string.IsNullOrEmpty(Model.proImagen))
+            {
+                var imageUrl = Model.proImagen.StartsWith("~") || Model.proImagen.StartsWith("/") ? Model.proImagen : $"/{Model.proImagen}";
+                <div class="swiper-slide">
+                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.proImagen2))
+            {
+                var imageUrl = Model.proImagen2.StartsWith("~") || Model.proImagen2.StartsWith("/") ? Model.proImagen2 : $"/{Model.proImagen2}";
+                <div class="swiper-slide">
+                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.proImagen3))
+            {
+                var imageUrl = Model.proImagen3.StartsWith("~") || Model.proImagen3.StartsWith("/") ? Model.proImagen3 : $"/{Model.proImagen3}";
+                <div class="swiper-slide">
+                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.proImagen4))
+            {
+                var imageUrl = Model.proImagen4.StartsWith("~") || Model.proImagen4.StartsWith("/") ? Model.proImagen4 : $"/{Model.proImagen4}";
+                <div class="swiper-slide">
+                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                </div>
+            }
+        </div>
+
+
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+
+    <div class="info-producto">
+        <h5 class="titulo-producto">@Model.proNombre.ToUpper()</h5>
+        <div class="precio">$@Model.proPrecio.ToString("N2")</div>
+        
+        <div class="descripcion">            
+            
+
+            
+                @if (Model.EsDestacado == true)
+                {
+                    <div class="descripcion-destacado">
+                        <p>Destacado</p> 
+                    </div>
+                }
+            
+
+            <div class="descripcion-texto">
+                @if (!string.IsNullOrEmpty(Model.proDescripcion))
+                {
+                    <p>
+                        @Model.proDescripcion
+                    </p>
+                }
+            </div>
+
+            <div class="descripcion-medidas">
+                @if (!string.IsNullOrEmpty(Model.proMedidas))
+                {
+                    <p>@Model.proMedidas</p>
+                }
+            </div>
+
+        </div>
+
+        <form asp-controller="Carritos" asp-action="AgregarAlCarrito" method="post">
+    
+            @* Campo oculto: CRUCIAL para enviar el ID del producto al controlador *@
+            <input type="hidden" name="proId" value="@Model.proId" />
+    
+            @* El Botón visible para el usuario *@
+            <button type="submit" class="btn btn-success btn-lg w-100">
+                <i class="fa-solid fa-cart-plus me-2"></i> Agregar al Carrito
+            </button>
+        </form>
+    </div>
+
+</div>
+    
+
+
+<!-- JS DEL SWIPER -->
+<script>
+
+            const swiper = new Swiper('.swiper-destacado', {
+      // Optional parameters
+      direction: 'horizontal',
+      slidesPerView: 1,
+      spaceBetween: 10,
+      autoplay: {
+        delay: 3000, // milisegundos entre cada slide (3000ms = 3 segundos)
+        disableOnInteraction: false // el autoplay continúa aunque el usuario interactúe
+        },
+      loop: true,
+
+      // If we need pagination
+      pagination: {
+        el: '.swiper-pagination',
+      },
+
+      // Navigation arrows
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+
+      // And if we need scrollbar
+      scrollbar: {
+        el: '.swiper-scrollbar',
+      },
+
+      breakpoints: {
+          768: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+          },
+
+
+      },
+
+    });
+
+</script>
+

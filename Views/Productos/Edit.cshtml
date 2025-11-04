@@ -1,0 +1,225 @@
+﻿@model Drippin.Models.Producto
+
+@{
+    ViewData["Title"] = ViewData["Editar"] + "Producto" ;
+}
+
+<link rel="stylesheet" href="~/css/adminproductos.css" />
+<link rel="stylesheet" href="~/css/paneladmin-proEdit.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="content-container form-view">
+    <div class="header-actions">
+        <h1>@ViewData["Action"] PRODUCTO</h1>
+    </div>
+
+    <hr/>
+
+    <div class="form-card">
+        <form asp-action="Edit" asp-route-id="@Model.proId" enctype="multipart/form-data" >
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+            
+            @* Campo oculto para el ID en caso de Editar *@
+            @if (ViewData["Action"].ToString() == "Edit")
+            {
+                    <input type="hidden" asp-for="proId" />
+            }
+
+            <div class="form-group">
+                <label asp-for="proNombre" class="control-label"></label>
+                <input asp-for="proNombre" class="form-control" />
+                <span asp-validation-for="proNombre" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="proPrecio" class="control-label"></label>
+                <input asp-for="proPrecio" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="proPrecio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoriaId" class="control-label"></label>
+                <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.CategoriaId"></select>
+                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Disponible" class="control-label checkbox-label">
+                    <input asp-for="Disponible" class="form-check-input" /> @Html.DisplayNameFor(model => model.Disponible)
+                </label>
+            </div>
+
+            <label class="control-label checkbox-label">
+                        <input class="form-check-input" asp-for="EsDestacado" /> 
+                        <span class="checkbox-text">@Html.DisplayNameFor(model => model.EsDestacado)</span>
+            </label>
+
+           @* CAMPO DE SUBIDA DE ARCHIVO (Principal) *@
+            <div class="form-group file-upload-group">
+                <label for="fileUpload" class="control-label file-upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Principal (wwwroot/images/*)
+                </label>
+    
+                <input type="file" id="fileUpload" name="imagenSubida" class="form-control custom-file-input" accept="image/*" />
+    
+                @* Muestra el mensaje de error de validación manual *@
+                <span class="text-danger">
+                    @Html.ValidationMessage("imagenSubida")
+                </span>
+            </div>
+            @* Campo Original para la URL/Ruta (oculto si usas subida) *@
+            <input type="hidden" asp-for="proImagen" />    
+
+            @* --- CAMPO 2: IMAGEN SECUNDARIA 2 --- *@
+                    <div class="form-group file-upload-group">
+                        <label for="imagenSecundaria2" class="control-label file-upload-label secondary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 2
+                        </label>
+                        <input type="file" id="imagenSecundaria2" name="imagenSecundaria2" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen2" />
+                    </div>
+
+                    @* --- CAMPO 3: IMAGEN SECUNDARIA 3 --- *@
+                    <div class="form-group file-upload-group">
+                        <label for="imagenSecundaria3" class="control-label file-upload-label secondary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 3
+                        </label>
+                        <input type="file" id="imagenSecundaria3" name="imagenSecundaria3" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen3" />
+                    </div>
+                    
+                    @* --- CAMPO 4: IMAGEN SECUNDARIA 4 --- *@
+                    <div class="form-group file-upload-group">
+                        <label for="imagenSecundaria4" class="control-label file-upload-label secondary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 4
+                        </label>
+                        <input type="file" id="imagenSecundaria4" name="imagenSecundaria4" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen4" />
+                    </div>
+
+            @* --- PREVISUALIZACIÓN DE IMÁGENES ACTUALES (Principal y Secundarias) --- *@
+
+@* --- PREVISUALIZACIÓN DE IMÁGENES ACTUALES --- *@
+
+@* Solo mostramos el recuadro si hay al menos una imagen *@
+@if (!string.IsNullOrEmpty(Model.proImagen) || !string.IsNullOrEmpty(Model.proImagen2) || !string.IsNullOrEmpty(Model.proImagen3) || !string.IsNullOrEmpty(Model.proImagen4))
+{
+        <div class="image-preview-wrapper mb-4">
+            <div class="preview-header">
+                <h4>Imágenes Actuales</h4>
+                <p>Marca la casilla para eliminar una imagen. La imagen principal debe ser reemplazada inmediatamente si se elimina.</p>
+            </div>
+        
+            <div class="row g-3"> @* g-3 es el gap de Bootstrap para el espaciado de columnas *@
+        
+                @* --- Tarjeta de Imagen Principal --- *@
+                @if (!string.IsNullOrEmpty(Model.proImagen))
+                {
+                        <div class="col-md-12"> @* La principal ocupa todo el ancho de la fila *@
+                            <div class="current-image-card primary-image-card">
+                                <h5 class="image-card-title">Imagen Principal</h5>
+                                <div class="image-container-main">
+                                    <img src="@Url.Content(Model.proImagen)" alt="Principal" class="product-image-preview"/>
+                                </div>
+                        
+                                @* Checkbox de Eliminación Principal *@
+                                <div class="delete-checkbox-group mt-3">
+                                    <input type="checkbox" name="eliminarImagenPrincipal" value="true" class="form-check-input custom-checkbox" id="del_img_1">
+                                    <label class="form-check-label text-danger" for="del_img_1">
+                                        **Eliminar Imagen (Requiere reemplazo)**
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                }
+
+                @* --- Tarjetas de Imágenes Secundarias (en una nueva fila para alineación) --- *@
+                @if (!string.IsNullOrEmpty(Model.proImagen2) || !string.IsNullOrEmpty(Model.proImagen3) || !string.IsNullOrEmpty(Model.proImagen4))
+                {
+                        <div class="col-12 mt-4">
+                            <h5 class="secondary-title">Imágenes Secundarias:</h5>
+                        </div>
+                }
+            
+                @{
+                        // Define una lista de imágenes y sus nombres de campo para iterar
+                        var secondaryImages = new List<(string url, string name, int index)>
+                                {
+                                        (Model.proImagen2, nameof(Model.proImagen2), 2),
+                                        (Model.proImagen3, nameof(Model.proImagen3), 3),
+                                        (Model.proImagen4, nameof(Model.proImagen4), 4)
+                                };
+                }
+
+                @foreach (var img in secondaryImages)
+                {
+                        @if (!string.IsNullOrEmpty(img.url))
+                        {
+                                <div class="col-md-4 col-sm-6"> @* 3 columnas en desktop, 2 en tablet/mobile *@
+                                    <div class="current-image-card secondary-image-card">
+                                        <h5 class="image-card-title">Imagen @img.index:</h5>
+                                        <div class="image-container-secondary">
+                                            <img src="@Url.Content(img.url)" alt="Secundaria @img.index" class="product-image-preview-small"/>
+                                        </div>
+                            
+                                        @* Checkbox de Eliminación Secundaria *@
+                                        <div class="delete-checkbox-group mt-3">
+                                            <input type="checkbox" name="eliminarImagen@img.index" value="true" class="form-check-input custom-checkbox" id="del_img_@img.index">
+                                            <label class="form-check-label text-light" for="del_img_@img.index">
+                                                Eliminar Imagen @img.index
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                        }
+                }
+            </div>
+        </div>
+}
+
+            
+            
+            @* --- BOTONES DE ACCIÓN --- *@
+            <div class="form-actions">
+                <button type="submit" class="btn-submit-drippin" >
+                    <i class="fas fa-save"></i> @ViewData["Action"] Producto
+                </button>
+                <a asp-action="Index" class="btn-back-drippin">Volver a la Lista</a>
+            </div>
+        </form>
+    </div>
+
+    
+
+</div>
+
+                        @section Scripts {
+    @* Carga los scripts de validación de ASP.NET *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Este script muestra el nombre del archivo seleccionado junto al botón.
+            // Es la forma más sencilla de diferenciar si hay un archivo 'subido' o no en la vista Create/Edit.
+            const fileInputs = document.querySelectorAll('.custom-file-input');
+
+            fileInputs.forEach(input => {
+                const label = document.querySelector(`[for="${input.id}"]`);
+                if (label) {
+                    input.addEventListener('change', function() {
+                        if (this.files && this.files.length > 0) {
+                            label.innerHTML = `<i class="fa-solid fa-check me-2"></i> Archivo listo: ${this.files[0].name}`;
+                            label.classList.add('file-ready'); // Clase para cambiar el color de fondo
+                        } else {
+                            // Restaurar si el archivo es deseleccionado
+                            label.innerHTML = label.getAttribute('data-default-text');
+                            label.classList.remove('file-ready');
+                        }
+                    });
+                    // Guardar el texto original del label
+                    label.setAttribute('data-default-text', label.innerHTML);
+                }
+            });
+        });
+    </script>
+    }

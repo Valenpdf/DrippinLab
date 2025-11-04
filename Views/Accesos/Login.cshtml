@@ -1,0 +1,85 @@
+﻿@model Drippin.Models.ViewModel.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<style>
+
+    th {
+        color: white;
+    }
+
+    td {
+        color: white;
+    }
+
+    h1 {
+        color: white;
+    }
+
+    div {
+        color: white;
+    }
+
+</style>
+
+
+<h1>Iniciar Sesión</h1>
+<hr />
+
+@* Muestra mensajes temporales (Ej: "Registro exitoso", "Cerraste sesión") *@
+@if (TempData["SuccessMessage"] != null)
+{
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["InfoMessage"] != null)
+{
+        <div class="alert alert-info">@TempData["InfoMessage"]</div>
+}
+@if (TempData["Error"] != null)
+{
+        <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login">
+            @* Muestra errores generales de validación (Ej: Credenciales incorrectas) *@
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="UsCorreo" class="control-label"></label>
+                <input asp-for="UsCorreo" class="form-control" />
+                <span asp-validation-for="UsCorreo" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Recordarme" /> @Html.DisplayNameFor(model => model.Recordarme)
+                </label>
+            </div>
+            
+            <div class="form-group mt-3">
+                <input type="submit" value="Acceder" class="btn btn-primary" />
+            </div>
+
+            <div class="mt-3">
+                <a asp-action="Registrarse">¿No tienes cuenta? Regístrate aquí</a> |
+                <a asp-action="StartRecovery">¿Olvidaste tu contraseña?</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

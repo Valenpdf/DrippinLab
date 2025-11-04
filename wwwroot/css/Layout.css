@@ -1,0 +1,246 @@
+/* Header/Barra de navegación */
+.navbar {
+    /*min-height: 83px;*/
+    
+    transition: all 0.5s ease;
+}
+
+#main-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #000;
+    transition: padding 0.3s ease; /* transición para que al cambiar de tamaño lo haga con una animación que dure cierto tiempo */
+    z-index: 1000;
+    padding: 23px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#main-header .container-fluid {
+    margin-top: -5px;
+}
+
+#titulo-header {
+    font-size: 2.5rem;
+    transition: font-size 0.5s ease;
+    font-family: Amfibia Ultrabold;
+    padding-bottom: 17px;
+}
+
+#titulo-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    transition: margin-top 0.5s ease;
+}
+
+.logo-header {
+    height: 30px;
+    width: auto;
+    transition: all 0.5s ease; /* Transición para todos los cambios */
+    object-fit: contain; /* Mantiene la proporción */
+    margin-bottom: -5px;
+}
+
+.contenido {
+    padding-top: 100px; /* Asegura que el contenido comience debajo del header fijo */
+}
+
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+
+/* //////////////// CARRITO //////////////////// */
+
+/* CARRITO */
+.carrito-icono {
+    height: 40px;
+    width: 100%;
+    vertical-align: middle;
+    margin-right: 5px;
+    margin-bottom: -0px;
+    transition: all 0.5s ease;
+    transform-origin: center;
+}
+
+.d-flex.order-3 {
+    width: 55px !important;
+    height: 24px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* elimina relleno interno */
+    margin: 0; /* evita separación externa */
+}
+
+/* //////////////// DROPDOWN //////////////////// */
+
+
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+
+/*//////// BOTÓN HAMBURGUESA - ///////////*/
+
+/* BOTÓN HAMBURGUESA */
+.navbar-toggler {
+    transition: all 0.5s ease;
+    transform-origin: center;
+    margin-bottom: -5px;
+}
+
+.offcanvas {
+    width: 100% !important;
+    background-color: black;
+    transition: all 0.5s ease;
+}
+
+
+.offcanvas-title {
+    color: white;
+}
+
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+/*//////// MENÚ CATEGORIAS - ///////////*/
+
+/*  TÍTULO "Categorías" */
+#offcanvasNavbarLabel {
+    /* Aumenta el tamaño del título del Offcanvas */
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f8f9fa; /* Color blanco o similar si es un tema oscuro */
+    padding: 8px;
+    
+
+}
+
+/* ELEMENTOS DE LA LISTA (<li>) */
+.offcanvas-body .navbar-nav .nav-item {
+    /* Agrega margen inferior para separarlos. Puedes ajustar 15px */
+    margin-bottom: 15px;
+}
+
+    /* TEXTO de los enlaces de las categorías (<a>) */
+    .offcanvas-body .navbar-nav .nav-item .nav-link {
+        /* Aumenta el tamaño del texto de las categorías */
+        font-size: 1.3rem;
+        
+        /* Opcional: Pequeño padding a la izquierda si el enlace es muy pegado al borde */
+        padding-left: 0.5rem;
+    }
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+
+/* //////////////// - HEADER PEQUEÑO - /////////////////////*/
+
+
+/* -- HEADER -- */
+.header-small .navbar {
+    min-height: 10px !important;
+}
+
+.header-small .logo-header {
+    transform: scale(0.7); /* Reduce al 60% del tamaño original */
+    transform-origin: center; /* Asegura que se reduzca desde el centro */
+    margin-top: 5px;
+}
+
+
+.header-small #main-header { /* Cuando "header-small" esté dentro de "main-header (el script lo mete
+                                                   al scrollear) se aplique el padding al header, haciéndolo 10 px más pequeño */
+    padding: 2px 0;
+}
+
+.header-small #titulo-header { /* Si "titulo-header" está dentro de un elemento con la clase header-small
+                                                   cambia su tamaño a 1.5rem                                             */
+    font-size: 1.5rem;
+    padding-bottom: 8px;
+}
+
+
+/* -- CARRITO -- */
+.header-small .carrito-icono {
+    transform: scale(0.7);
+    margin-top: 5px;
+}
+
+
+
+/* -- BOTÓN HAMBURGUESA -- */
+
+.header-small .navbar-toggler {
+    transform: scale(0.7);
+    padding: 0.3rem; /* Ajusta el padding para mantener la proporción */
+}
+
+
+
+/*-------------------------------------------------------------------------------------------------------------------------*/
+
+/*//////// RESPONSIVE - ///////////*/
+
+@media (min-width: 1024px) {
+    #main-header {
+        padding: 15px 0;
+    }
+
+    .header-small #main-header {
+        padding: 2px 0;
+    }
+
+    #titulo-container {
+        margin-top: 0px;
+    }
+
+    .header-small #titulo-container {
+        transition: font-size 0.5s ease;
+        margin-top: -5px;
+    }
+
+    .logo-header {
+        height: 50px;
+        width: auto;
+        transition: all 0.5s ease; /* Transición para todos los cambios */
+        object-fit: contain; /* Mantiene la proporción */
+    }
+
+    .header-small .logo-header {
+        transform: scale(0.6); /* Reduce al 60% del tamaño original */
+        transform-origin: center; /* Asegura que se reduzca desde el centro */
+    }
+
+    #categoria-iconos img{
+        height: 40px;
+        width: 100%;
+    }
+
+    #titulo-header {
+        padding-bottom: 0px;  
+    }
+
+    .carrito-icono {
+        height: 40px;
+        width: 100%;
+    }
+
+    .d-flex.order-3 {
+        width: 100px !important;
+        height: 24px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0; /* elimina relleno interno */
+        margin: 0; /* evita separación externa */
+    }
+
+    /*.header-small #categoria-iconos img {
+        height: 30px;
+    }*/
+
+    
+
+}

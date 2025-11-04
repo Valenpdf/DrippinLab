@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Panel de Administrador";
+}
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/paneladmin.css" asp-append-version="true" />
+
+<div class="full-width-panel-wrapper">
+
+    <div class="content-container admin-panel-view">
+        <div class="text-center mb-5">
+            <h1 class="panel-title">@ViewData["Title"]</h1>
+            <p class="panel-lead">@ViewData["Message"]</p>
+        </div>
+
+        <hr class="panel-hr" />
+
+        <div class="row g-4 mt-5" id="paneladmin-box">
+        
+            @* Tarjeta para Gestión de Usuarios *@
+            <div class="col-md-6">
+                <div class="admin-card h-100 shadow-dark">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="fa-solid fa-users fa-4x text-accent-light mb-4"></i>
+                        <h5 class="admin-card-title">Gestión de Usuarios</h5>
+                        <p class="admin-card-text">Ver, crear, editar y eliminar usuarios del sistema.</p>
+                        <a asp-controller="Usuarios" asp-action="Index" class="btn-primary-drippin mt-auto">
+                            Ir a Usuarios
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            @* Tarjeta para Gestión de Productos *@
+            <div class="col-md-6">
+                <div class="admin-card h-100 shadow-dark">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="fa-solid fa-boxes-stacked fa-4x text-accent-red mb-4"></i>
+                        <h5 class="admin-card-title">Gestión de Productos</h5>
+                        <p class="admin-card-text">Ver, crear, editar y eliminar productos del catálogo.</p>
+                        <a asp-controller="Productos" asp-action="Index" class="btn-primary-drippin btn-red-accent mt-auto">
+                            Ir a Productos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+            @* Tarjeta para Gestión de Categorias *@
+            <div class="col-md-6">
+                <div class="admin-card h-100 shadow-dark">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="fa-solid fa-tags fa-4x text-accent-light mb-4"></i>
+                        <h5 class="admin-card-title">Gestión de Categorías</h5>
+                        <p class="admin-card-text">Organiza y administra las categorías de los productos.</p>
+                        <a asp-controller="Categorias" asp-action="Index" class="btn-primary-drippin mt-auto">
+                            Ir a Categorías
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+            @* Tarjeta para Gestión de Roles *@
+            <div class="col-md-6">
+                <div class="admin-card h-100 shadow-dark">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="fa-solid fa-truck-fast fa-4x text-accent-red mb-4"></i>
+                        <h5 class="admin-card-title">Gestión de Roles</h5>
+                        <p class="admin-card-text">Revisa los roles existentes</p>
+                        <a asp-controller="Roles" asp-action="Index" class="btn-primary-drippin btn-red-accent mt-auto">
+                            Ir a Roles
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

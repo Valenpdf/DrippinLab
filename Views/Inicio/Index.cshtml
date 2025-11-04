@@ -1,0 +1,28 @@
+﻿@* Views/Inicio/Index.cshtml *@
+
+
+@using Drippin.DTO
+
+@{
+    ViewData["Title"] = "Inicio";
+    
+}
+
+<h1>Bienvenido al Panel Principal</h1>
+
+<h2>Datos extraídos de Claims:</h2>
+<p><strong>ID:</strong> @ViewBag.IdUsuario</p>
+<p><strong>Nombre:</strong> @ViewBag.UsNombre</p>
+<p><strong>Apellido:</strong> @ViewBag.UsApellido</p>
+<p><strong>Correo:</strong> @ViewBag.UsCorreo</p>
+<p><strong>Rol:</strong> @ViewBag.Rol</p>
+
+<hr/>
+
+<h2>Datos extraídos de ViewBag.UsuarioDTO:</h2>
+@{
+    var usuarioDto = (UsuariosDTO)ViewBag.UsuarioDTO;
+}
+<p><strong>Nombre DTO:</strong> @usuarioDto.UsNombre</p>
+<p><strong>Apellido DTO:</strong> @usuarioDto.UsApellido</p>
+<p><strong>Correo DTO:</strong> @usuarioDto.UsCorreo</p>

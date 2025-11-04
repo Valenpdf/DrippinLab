@@ -1,0 +1,100 @@
+﻿@model Drippin.Models.Categoria
+@{
+    ViewData["Title"] = @Model.CatNombre;
+    
+    // Puedes incluir aquí los CSS necesarios (swiper.css, cards.css, etc.) si no están en _Layout
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<link rel="stylesheet" href="~/css/swiper.css" /> <!-- // CSS DEL SWIPER DESTACADO // -->
+
+<link rel="stylesheet" href="~/css/cards.css" /> <!-- // CSS DE LAS CARDS (Productos normales) // -->
+
+<div class="barra-marquee">
+    <div class="marquee-contenido">
+        <span>🔥 Nueva colección ya disponible 🔥 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 💧 Envíos gratis en compras mayores a $30.000 💧 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 💥 ¡Seguinos en Instagram @@drippin.lab! 💥</span>
+    </div>
+</div>
+
+
+<div class="container mt-3">
+    <h2 class="text-white mb-4 categoria-titulo">@Model.CatNombre</h2>
+</div>
+
+    <!-- /* BARRA DE FILTROS */-->
+
+    <div class="barra-filtros">
+        <button class="boton-filtro" onclick="toggleMenu()">Filtrar ▼</button>
+        <div id="menu-filtros" class="menu-filtros oculto">
+            <ul>
+                <li><a asp-controller="Categorias" asp-action="Details" asp-route-id="@Model.CategoriaId" asp-route-sortBy="precio_asc">Precio ascendente</a></li>
+                <li><a asp-controller="Categorias" asp-action="Details" asp-route-id="@Model.CategoriaId" asp-route-sortBy="precio_desc">Precio descendente</a></li>
+                <li><a asp-controller="Categorias" asp-action="Details" asp-route-id="@Model.CategoriaId" asp-route-sortBy="nombre_asc">Nombre A-Z</a></li>
+                <li><a asp-controller="Categorias" asp-action="Details" asp-route-id="@Model.CategoriaId" asp-route-sortBy="nombre_desc">Nombre Z-A</a></li>
+                <li><a asp-controller="Categorias" asp-action="Details" asp-route-id="@Model.CategoriaId" >Reestablecer Orden</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="contenedor-productos">
+
+        @if (Model.Productos != null && Model.Productos.Any())
+        {
+            
+            // Iteramos sobre la lista de Productos que viene cargada dentro del Modelo Categoria
+            @foreach (var p in Model.Productos)
+            {
+                <div class="card-producto">
+                    <a asp-controller="Productos" asp-action="Details" asp-route-id="@p.proId" class="card-producto-link">
+
+                        <div class="imagen-card">
+
+                            @{
+                                // Lógica de fallback: Si p.proImagen es nulo/vacío, usa la imagen de ejemplo.
+                                string imagePath = string.IsNullOrEmpty(p.proImagen)
+                                ? "~/images/ejemplo1.jpg"
+                                : p.proImagen;
+
+                                // Lógica de corrección: Asegurar que la ruta comience con '/' antes de pasarla a Url.Content
+                                if (!imagePath.StartsWith("~") && !imagePath.StartsWith("/"))
+                                {
+                                    imagePath = $"/{imagePath}";
+                                }
+                            }
+
+                            <img src="@Url.Content(imagePath)" alt="Imagen de @p.proNombre" />
+
+                        </div>
+
+                        <div class="contenido-card">
+                            <h5 class="titulo">@p.proNombre</h5>
+                            <p class="precio">$@p.proPrecio.ToString("N2")</p>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-white">No hay productos disponibles en esta categoría.</p>
+        }
+    </section>
+
+    <!-- MENU DE FILTROS -->
+
+    <script>
+
+        function toggleMenu() {
+            var menu = document.getElementById("menu-filtros");
+            menu.classList.toggle("oculto");
+        }
+
+    </script>
+
+    <!--////////////////////////////////////////////////////-->
+

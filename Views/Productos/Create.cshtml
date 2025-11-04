@@ -1,0 +1,174 @@
+﻿@model Drippin.Models.Producto
+@* Importante: Se asume que has incluido los estilos custom en _Layout o has vinculado 'adminproductos.css' *@
+
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/adminproductos.css" />
+
+<div class="content-container form-view">
+    <div class="header-actions">
+        <h1>CREAR NUEVO PRODUCTO</h1>
+    </div>
+
+    <hr/>
+
+    @* IMPORTANTE: Se añade enctype="multipart/form-data" para permitir la subida de archivos *@
+    <div class="form-card">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+            
+            @* --- COLUMNA IZQUIERDA: Detalles del Producto --- *@
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="proNombre" class="control-label"></label>
+                        <input asp-for="proNombre" class="form-control" />
+                        <span asp-validation-for="proNombre" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="proPrecio" class="control-label"></label>
+                        <input asp-for="proPrecio" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="proPrecio" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CategoriaId" class="control-label"></label>
+                        <select asp-for="CategoriaId" class="form-control filter-dropdown" asp-items="ViewBag.CategoriaId"></select>
+                        <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                    </div>
+
+                    
+                </div>
+
+                @* --- COLUMNA DERECHA: Imágenes de Subida (Todas File) --- *@
+<div class="col-md-6">
+    
+    @* --- CAMPO 1: IMAGEN PRINCIPAL (con Icono de Pista) --- *@
+    <div class="form-group file-upload-group">
+        <div class="label-with-hint">
+            @* Se usa span para el título para no interferir con el label del botón *@
+            <span class="control-label-text">Imagen Principal</span> 
+            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Obligatoriamente la imagen debe estar en wwwroot/images/drippin">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </span>
+        </div>
+        
+        <label for="imagenSubida" class="control-label file-upload-label primary-upload-label">
+            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Principal (wwwroot/images/*)
+        </label>
+        <input type="file" id="imagenSubida" name="imagenSubida" class="form-control custom-file-input" accept="image/*" />
+        <input type="hidden" asp-for="proImagen" />
+        <span class="text-danger">@Html.ValidationMessage("imagenSubida")</span>
+    </div>
+    
+    @* --- CAMPO 2: IMAGEN SECUNDARIA 2 (Usando estructura de pista) --- *@
+    <div class="form-group file-upload-group">
+        <div class="label-with-hint">
+            <span class="control-label-text">Imagen Secundaria 2</span> 
+            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Opcional. La imagen debe estar en wwwroot/images/drippin">
+                <i class="fa-solid fa-info-circle"></i>
+            </span>
+        </div>
+        <label for="imagenSubida2" class="control-label file-upload-label secondary-upload-label">
+            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 2
+        </label>
+        <input type="file" id="imagenSubida2" name="imagenSubida2" class="form-control custom-file-input" accept="image/*" />
+        <input type="hidden" asp-for="proImagen2" />
+        <span class="text-danger">@Html.ValidationMessage("imagenSubida2")</span>
+    </div>
+
+    @* --- CAMPO 3: IMAGEN SECUNDARIA 3 (Usando estructura de pista) --- *@
+    <div class="form-group file-upload-group">
+        <div class="label-with-hint">
+            <span class="control-label-text">Imagen Secundaria 3</span> 
+            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Opcional. La imagen debe estar en wwwroot/images/drippin">
+                <i class="fa-solid fa-info-circle"></i>
+            </span>
+        </div>
+        <label for="imagenSubida3" class="control-label file-upload-label secondary-upload-label">
+            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 3
+        </label>
+        <input type="file" id="imagenSubida3" name="imagenSubida3" class="form-control custom-file-input" accept="image/*" />
+        <input type="hidden" asp-for="proImagen3" />
+        <span class="text-danger">@Html.ValidationMessage("imagenSubida3")</span>
+    </div>
+    
+    @* --- CAMPO 4: IMAGEN SECUNDARIA 4 (Usando estructura de pista) --- *@
+    <div class="form-group file-upload-group">
+        <div class="label-with-hint">
+            <span class="control-label-text">Imagen Secundaria 4</span> 
+            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Opcional. La imagen debe estar en wwwroot/images/drippin">
+                <i class="fa-solid fa-info-circle"></i>
+            </span>
+        </div>
+        <label for="imagenSubida4" class="control-label file-upload-label secondary-upload-label">
+            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 4
+        </label>
+        <input type="file" id="imagenSubida4" name="imagenSubida4" class="form-control custom-file-input" accept="image/*" />
+        <input type="hidden" asp-for="proImagen4" />
+        <span class="text-danger">@Html.ValidationMessage("imagenSubida4")</span>
+    </div>
+
+</div>
+
+            @* --- CHECKBOXES y BOTONES --- *@
+            <hr class="form-section-divider" />
+            <div class="row align-items-center">
+                <div class="col-md-6 checkbox-group">
+                    <label class="control-label checkbox-label">
+                        <input class="form-check-input" asp-for="Disponible" /> 
+                        <span class="checkbox-text">@Html.DisplayNameFor(model => model.Disponible)</span>
+                    </label>
+                    <label class="control-label checkbox-label">
+                        <input class="form-check-input" asp-for="EsDestacado" /> 
+                        <span class="checkbox-text">@Html.DisplayNameFor(model => model.EsDestacado)</span>
+                    </label>
+                </div>
+                
+                <div class="col-md-6 form-actions">
+                    <button type="submit" class="btn-submit-drippin">
+                        <i class="fa-solid fa-plus me-1"></i> CREAR PRODUCTO
+                    </button>
+                    <a asp-action="Index" class="btn-back-drippin">Volver a la Lista</a>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @* Carga los scripts de validación de ASP.NET *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Este script muestra el nombre del archivo seleccionado junto al botón.
+            // Es la forma más sencilla de diferenciar si hay un archivo 'subido' o no en la vista Create/Edit.
+            const fileInputs = document.querySelectorAll('.custom-file-input');
+
+            fileInputs.forEach(input => {
+                const label = document.querySelector(`[for="${input.id}"]`);
+                if (label) {
+                    input.addEventListener('change', function() {
+                        if (this.files && this.files.length > 0) {
+                            label.innerHTML = `<i class="fa-solid fa-check me-2"></i> Archivo listo: ${this.files[0].name}`;
+                            label.classList.add('file-ready'); // Clase para cambiar el color de fondo
+                        } else {
+                            // Restaurar si el archivo es deseleccionado
+                            label.innerHTML = label.getAttribute('data-default-text');
+                            label.classList.remove('file-ready');
+                        }
+                    });
+                    // Guardar el texto original del label
+                    label.setAttribute('data-default-text', label.innerHTML);
+                }
+            });
+        });
+    </script>
+
+}

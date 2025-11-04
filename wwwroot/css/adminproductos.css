@@ -1,0 +1,507 @@
+/* --- Estilos para la Subida de Archivos --- */
+
+/* Oculta el input de tipo file por defecto (es feo y difícil de estilizar) */
+.custom-file-input {
+    display: none;
+}
+
+/* Estilo para el label que actúa como botón de subida */
+.file-upload-label {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #333333; /* Color de fondo del botón */
+    color: #ffffff;
+    text-align: center;
+    border: 1px solid #555555;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    margin-bottom: 5px;
+}
+
+    .file-upload-label:hover {
+        background-color: #555555;
+    }
+
+/* Línea divisoria dentro del formulario (para separar secciones) */
+.form-section-divider {
+    border: 0;
+    height: 1px;
+    background-color: #333333;
+    margin: 30px 0;
+}
+
+/* Estilos de Checkbox mejorados (reutilizados del post anterior) */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.checkbox-text {
+    margin-left: 10px;
+    color: #e0e0e0;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    background-color: #1a1a1a;
+    border: 1px solid #555555;
+    /* Ajustes visuales para el modo oscuro */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+    .form-check-input:checked {
+        background-color: #ff3333; /* Rojo Drippin' al chequear */
+        border-color: #ff3333;
+    }
+
+/* ///////////////////////////////// ADMINISTRACIÓN DE PRODUCTOS /////////////////////////////// */
+
+.content-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    color: #ffffff; /* Títulos en blanco puro */
+    font-size: 2em;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* --- Encabezado y Botón Crear --- */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.btn-primary-drippin {
+    background-color: #333333; /* Color oscuro para el botón principal */
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: 1px solid #555555;
+    transition: background-color 0.3s, border-color 0.3s;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+    .btn-primary-drippin:hover {
+        background-color: #555555;
+        border-color: #888888;
+    }
+
+/* --- Grid de Productos (Tarjetas) --- */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 300px de ancho mínimo por tarjeta */
+    gap: 30px;
+}
+
+.product-card {
+    background-color: #1a1a1a; /* Fondo para la tarjeta */
+    border: 1px solid #333333; /* Borde sutil */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    }
+
+.product-image-container {
+    width: 100%;
+    height: 300px; /* Altura fija para la imagen */
+    overflow: hidden;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000000; /* Fondo negro para las imágenes */
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Para que la imagen se vea completa sin cortar */
+    transition: opacity 0.3s;
+}
+
+.product-details {
+    flex-grow: 1;
+}
+
+.product-name {
+    color: #ffffff;
+    font-size: 1.25em;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.product-price {
+    color: #ff0000; /* Un toque de color rojo/destacado para el precio, como el de "Destacado" */
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.product-availability {
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+.available {
+    color: #4CAF50; /* Verde para disponible */
+    font-weight: bold;
+}
+
+.unavailable {
+    color: #f44336; /* Rojo para agotado */
+    font-weight: bold;
+}
+
+/* --- Botones de Acción de Tarjeta --- */
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto; /* Empuja los botones al final de la tarjeta */
+    padding-top: 10px;
+    border-top: 1px dashed #333333;
+}
+
+.btn-secondary-drippin, .btn-delete-drippin {
+    flex-grow: 1; /* Para que los botones se repartan el espacio */
+    padding: 8px 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+    border: 1px solid #444444;
+}
+
+.btn-secondary-drippin {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+}
+
+    .btn-secondary-drippin:hover {
+        background-color: #444444;
+    }
+
+.btn-delete-drippin {
+    background-color: transparent;
+    color: #f44336; /* Texto rojo sutil para eliminar */
+    border-color: #f44336;
+}
+
+    .btn-delete-drippin:hover {
+        background-color: #f44336;
+        color: #0d0d0d;
+    }
+
+/* Mensaje si no hay productos */
+.no-products {
+    text-align: center;
+    font-style: italic;
+    color: #777777;
+    margin-top: 50px;
+    padding: 20px;
+    border: 1px solid #333333;
+    background-color: #1a1a1a;
+}
+
+/* Separador (Horizontal Rule) */
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #333333;
+    margin: 30px 0;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////// */
+
+/* ////////////////////// BUSQUEDA DE PRODUCTOS /////////////////////////////////////////////*/
+
+/* --- Estilos para la Barra de Búsqueda --- */
+.search-bar-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 30px; /* Separación antes del HR */
+}
+
+.search-input {
+    flex-grow: 1; /* Para que ocupe la mayor parte del espacio */
+    padding: 12px 15px;
+    background-color: #1a1a1a; /* Fondo oscuro */
+    border: 1px solid #333333;
+    color: #e0e0e0;
+    font-size: 1em;
+    /* Eliminar el focus azul predeterminado */
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+    .search-input::placeholder {
+        color: #555555;
+    }
+
+    .search-input:focus {
+        border-color: #777777; /* Borde más claro al enfocar */
+    }
+
+.search-button {
+    background-color: #333333;
+    color: #ffffff;
+    padding: 12px 20px;
+    border: 1px solid #555555;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: background-color 0.3s, border-color 0.3s;
+    white-space: nowrap; /* Evita que el texto se rompa */
+}
+
+    .search-button:hover {
+        background-color: #555555;
+        border-color: #888888;
+    }
+
+.clear-search-link {
+    color: #999999;
+    text-decoration: none;
+    font-size: 0.9em;
+    padding: 12px 0;
+    white-space: nowrap;
+    transition: color 0.3s;
+}
+
+    .clear-search-link:hover {
+        color: #ffffff;
+    }
+
+/* ///////////////////////////////////////////////////////////////////////////// */
+
+/* ----------------- CREAR / EDITAR ---------------------- */
+/* --- Estilos para la Vista de Formulario (Create/Edit/Delete) --- */
+.form-view {
+    max-width: 700px; /* Ancho más pequeño para centrar el formulario */
+}
+
+.form-card {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border: 1px solid #333333;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.control-label {
+    display: block;
+    color: #e0e0e0;
+    font-weight: 500;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    background-color: #0d0d0d;
+    border: 1px solid #444444;
+    color: #ffffff;
+    font-size: 1em;
+    box-sizing: border-box; /* Incluye padding y border en el ancho total */
+}
+
+    .form-control:focus {
+        border-color: #555555;
+        outline: none;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+
+/* Estilo para el Checkbox (Disponible) */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    /* Estilos para customizar el checkbox si es necesario */
+}
+
+.text-danger {
+    color: #ff3333; /* Color de validación de error */
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: block;
+}
+
+.validation-summary {
+    color: #ff3333;
+    background-color: #2a0000;
+    border: 1px solid #5c0000;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Previsualización de imagen en Edit */
+.current-image-preview {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px dashed #555555;
+}
+
+    .current-image-preview img {
+        max-width: 150px;
+        height: auto;
+        display: block;
+        margin-top: 5px;
+    }
+
+
+/* --- Botones de Acción del Formulario (Submit/Back) --- */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 15px;
+}
+
+.btn-submit-drippin {
+    background-color: #333333; /* El color principal para crear/guardar */
+    color: #ffffff;
+    padding: 12px 25px;
+    border: 1px solid #555555;
+    transition: background-color 0.3s, border-color 0.3s;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+    .btn-submit-drippin:hover {
+        background-color: #555555;
+        border-color: #888888;
+    }
+
+.btn-back-drippin {
+    background-color: transparent;
+    color: #999999;
+    padding: 12px 25px;
+    border: 1px solid #333333;
+    text-decoration: none;
+    transition: color 0.3s, border-color 0.3s;
+    font-weight: 500;
+    text-align: center;
+}
+
+    .btn-back-drippin:hover {
+        color: #ffffff;
+        border-color: #555555;
+    }
+
+/* --- Estilos Específicos para Delete View --- */
+.delete-title {
+    color: #ff3333; /* Título de advertencia en rojo */
+    font-size: 2em;
+}
+
+.delete-hr {
+    background-color: #ff3333;
+    height: 2px;
+}
+
+.delete-card {
+    border-color: #ff3333; /* Borde rojo para la tarjeta de eliminación */
+    background-color: #1f0000; /* Fondo más oscuro y sutilmente rojizo */
+}
+
+.warning-text {
+    color: #ffaaaa;
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 10px;
+    border: 1px solid #ff3333;
+}
+
+.product-details-delete {
+    margin-bottom: 30px;
+    border-top: 1px dashed #555555;
+    padding-top: 20px;
+}
+
+.detail-group {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dotted #333333;
+}
+
+.detail-label {
+    color: #999999;
+    font-weight: 500;
+}
+
+.detail-value {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btn-delete-confirm {
+    background-color: #ff3333; /* Botón de eliminación en ROJO INTENSO */
+    color: #0d0d0d;
+    padding: 15px 30px;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    flex-grow: 1;
+    transition: background-color 0.3s;
+}
+
+    .btn-delete-confirm:hover {
+        background-color: #cc0000;
+    }
+
+.delete-actions {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+    .delete-actions .btn-back-drippin {
+        width: 100%;
+    }

@@ -1,0 +1,115 @@
+/* --- Contenedor Global de Previsualización --- */
+.image-preview-wrapper {
+    /* Fondo ligeramente diferente al fondo del formulario (#1a1a1a) */
+    background-color: #111111;
+    border: 1px solid #333333;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.preview-header h4 {
+    color: #ffffff;
+    font-weight: 600;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.preview-header p {
+    color: #aaaaaa;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+/* --- Estilos de las Tarjetas Individuales (Principal y Secundarias) --- */
+.current-image-card {
+    background-color: #1a1a1a;
+    border: 1px solid #444444;
+    padding: 15px;
+    height: 100%; /* Asegura que todas las tarjetas sean iguales */
+    display: flex;
+    flex-direction: column;
+}
+
+.image-card-title {
+    color: #cccccc;
+    font-size: 1.1em;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* Contenedor de Imagen (Main) */
+.image-container-main {
+    width: 100%;
+    height: 300px; /* Altura generosa para la imagen principal */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0d0d0d;
+    border: 1px solid #555555;
+}
+
+.image-container-secondary {
+    width: 100%;
+    height: 150px; /* Altura menor para las secundarias */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0d0d0d;
+    border: 1px solid #555555;
+}
+
+/* Imágenes */
+.product-image-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.product-image-preview-small {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Título de la sección de secundarias */
+.secondary-title {
+    color: #ffffff;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+}
+
+/* --- Estilos Checkbox de Eliminación --- */
+.delete-checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: auto; /* Empuja el checkbox al final de la tarjeta */
+}
+
+/* Estilo del input checkbox */
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+    background-color: #1a1a1a;
+    border: 1px solid #ff3333; /* Borde rojo de advertencia */
+    cursor: pointer;
+    /* Resetear apariencia por defecto */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin-right: 8px;
+}
+
+    .custom-checkbox:checked {
+        background-color: #ff3333;
+        border-color: #ff3333;
+    }
+
+/* Estilo del texto del label de eliminación */
+.delete-checkbox-group .form-check-label {
+    color: #ff3333 !important; /* Texto de eliminación siempre en rojo */
+    font-weight: 500;
+    font-size: 0.9em;
+}

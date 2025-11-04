@@ -1,0 +1,230 @@
+
+/* --- Estilos del Panel General --- */
+.full-width-panel-wrapper {
+    width: 100%;
+    /* Fondo ligeramente más claro que el fondo del cuerpo (#0d0d0d) 
+       para que se destaque */
+    background-color: #121212;
+    /* Padding vertical para que el contenido no esté pegado a los bordes */
+    padding-top: 50px;
+    padding-bottom: 50px;
+    /* Borde sutil para separarlo del fondo */
+    border-top: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4); /* Sombra interna sutil */
+}
+
+/* Modificación de la clase content-container para que ahora solo limite el ancho interno */
+.content-container.admin-panel-view {
+    max-width: 1200px; /* Limita el ancho del contenido interno, como las tarjetas */
+    margin: 0 auto; /* Centra el contenido */
+    padding: 0 20px; /* Espacio a los lados en pantallas pequeñas */
+}
+
+/* --- ESTILOS GENERALES --- */
+html, body {
+    padding: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    height: auto;
+    
+    
+
+    background-image: url('/images/drippinbg.jpg');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.todo {
+    margin-top: -15px;
+}
+
+    /* Evita que .container limite la altura */
+    body > .container {
+        min-height: 100vh;
+    }
+
+main {
+    
+    background: transparent;
+}
+
+.titulo-producto {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+
+}
+
+.precio {
+    color: #008000;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+/* Botón de contacto */
+.boton-contacto {
+    display: inline-block; /* Permite dimensionar el botón */
+    padding: 12px 25px; /* Espaciado interno (vertical/horizontal) */
+    background: #2c3e50; /* Color de fondo */
+    color: white; /* Color de texto */
+    text-decoration: none; /* Elimina subrayado de enlace */
+    border-radius: 4px; /* Bordes redondeados */
+    margin-top: 15px; /* Espacio superior */
+    transition: background 0.3s; /* Efecto de transición suave */
+}
+
+    .boton-contacto:hover {
+        background: #1a252f; /* Color de fondo al pasar el ratón */
+    }
+
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+    
+}
+
+footer {
+    display: none;
+}
+
+
+
+
+/*//////// PAGINA CATEGORIA - ///////////*/
+
+
+
+.categoria-titulo {
+    text-align: left;
+    font-size: 2.2rem;
+    background-color: #121212;
+    padding: 10px;
+
+}
+
+.categoria-icono {
+    height: 26px;
+    width: 26px;
+
+}
+
+/*//////// BARRA MARQUEE - ///////////*/
+
+.barra-marquee {
+    width: 100%;
+    overflow: hidden;
+    background-color: black;
+    color: white;
+    padding: 6px 0;
+    white-space: nowrap;
+    position: relative;
+    bottom: 15px;
+    
+}
+
+.marquee-contenido {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+    min-width: 100vw;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+
+@media (min-width: 601px) and (max-width: 767px ) {
+   
+    .marquee-contenido {
+        animation-duration: 7s;
+       
+    }
+
+
+
+}
+
+    /* ///////////////////// */
+
+
+    /*//////// BARRA DE FILTROS ///////////*/
+
+    .barra-filtros {
+        width: 100%;
+        background-color: #222;
+        color: white;
+        padding: 10px 20px;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 7px 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .boton-filtro {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .menu-filtros {
+        margin-top: 10px;
+        background-color: #444;
+        padding: 10px;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+        .menu-filtros ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-filtros li {
+            margin: 6px 0;
+        }
+
+        .menu-filtros a {
+            text-decoration: none;
+            color: white;
+        }
+
+            .menu-filtros a:hover {
+                text-decoration: underline;
+            }
+
+    /* Ocultar el menú inicialmente */
+    .oculto {
+        display: none;
+    }
+
+    /* ///////////////////// */

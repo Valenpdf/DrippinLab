@@ -1,0 +1,62 @@
+﻿@model Drippin.Models.ViewModel.RecoveryPasswordViewModel
+@{
+    ViewData["Title"] = "Restablecer Contraseña";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Asegúrate de que esta ruta sea correcta
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow p-4">
+                <h2 class="card-title text-center mb-4">Nueva Contraseña</h2>
+                <p class="text-center text-muted">
+                    Ingresa y confirma tu nueva contraseña.
+                </p>
+
+                <form asp-action="Recovery" method="post">
+                    
+                    {{-- Campo Oculto para el Token --}}
+                    {{-- Este campo es CRUCIAL para enviar el Token de vuelta al POST --}}
+                    <input type="hidden" asp-for="Token" />
+
+                    @* Mensaje de Error General *@
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewPassword" class="form-label">Contraseña</label>
+                        <input asp-for="NewPassword" type="password" class="form-control" />
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Cambiar Contraseña
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            
+            @* Muestra mensajes de error si existen (aunque el controller ya redirige al login) *@
+            @if (TempData["Error"] != null)
+            {
+                    <div class="alert alert-danger mt-3 text-center" role="alert">
+                        @TempData["Error"]
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

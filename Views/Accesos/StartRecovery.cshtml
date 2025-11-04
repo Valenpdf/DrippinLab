@@ -1,0 +1,59 @@
+﻿@model Drippin.Models.ViewModel.RecoveryViewModel
+@{
+    ViewData["Title"] = "Recuperar Contraseña";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Asegúrate de usar tu layout principal
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow p-4">
+                <h2 class="card-title text-center mb-4">Recuperar Contraseña</h2>
+                <p class="text-center text-muted">
+                    Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                </p>
+
+                <form asp-action="StartRecovery" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="UsCorreo" class="form-label">Correo Electrónico</label>
+                        <input asp-for="UsCorreo" type="email" class="form-control" placeholder="ejemplo@correo.com" />
+                        <span asp-validation-for="UsCorreo" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-dark btn-lg">
+                            Enviar Enlace de Recuperación
+                        </button>
+                    </div>
+
+                    <p class="text-center">
+                        <a asp-action="Login" class="text-primary">Volver al Login</a>
+                    </p>
+                </form>
+            </div>
+
+            @* Sección para mostrar mensajes temporales (TempData) *@
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <div class="alert alert-success mt-3 text-center" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+            }
+            @if (TempData["InfoMessage"] != null)
+            {
+                    <div class="alert alert-info mt-3 text-center" role="alert">
+                        @TempData["InfoMessage"]
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
