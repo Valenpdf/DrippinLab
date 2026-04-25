@@ -1,7 +1,12 @@
-﻿@{
-    ViewData["Title"] = "Perfil de Cliente";
+@* Vista retornada por: InicioController.PerfilCliente *@
+@{
+    ViewData["Title"] = "Perfil del Cliente";
 }
 
-<h1>Perfil de Cliente</h1>
-<p>¡Solo visible si el rol es **Cliente**!</p>
-<p>Mensaje: @ViewData["Message"]</p>
+<h1 class="text-white">Perfil del Cliente</h1>
+
+@* Interfaz de visualización de perfil exclusiva para usuarios con rol de Cliente. *@
+<div class="text-white">
+    <p>Este recurso es de acceso restringido para perfiles con rol **Cliente**.</p>
+    <p>Notificación del sistema: @ViewData["Message"]</p>
+</div>

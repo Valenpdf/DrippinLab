@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Drippin.Models.Producto>
+@model IEnumerable<Drippin.Models.Producto>
+@* Vista retornada por: ProductosController.Index *@
 
 @{
-    ViewData["Title"] = "Index - Productos";
+    ViewData["Title"] = "Gestión de Catálogo - Productos";
 }
 
 <link rel="stylesheet" href="~/css/site.css" />
@@ -16,8 +17,12 @@
                 <a asp-action="Create" class="btn-primary-drippin">➕ Crear Nuevo Producto</a>
             </div>
 
+            @* Sección de filtrado y búsqueda avanzada de productos. *@
             <div class="search-bar-container">
-                @* Dropdown de Categorías (necesario para que el filtro del controlador funcione) *@
+                @* 
+                   Control de selección para filtrado por categoría. 
+                   Sincroniza el estado del dropdown con el parámetro categoriaId del controlador. 
+                *@
                 <select name="categoriaId" class="filter-dropdown">
                     <option value="">Todas las Categorías</option>
                     @if (ViewData["CategoriaId"] is SelectList selectList)
@@ -28,13 +33,11 @@
                                             selected="@(categoria.Value == (ViewData["CurrentCategoriaId"]?.ToString()))">
                                         @categoria.Text
                                     </option>
-
-
                             }
                     }
                 </select>
             
-                @* Input de Búsqueda por Nombre *@
+                @* Input de búsqueda de texto libre para coincidencia parcial por nombre de producto. *@
                 <input type="text" 
                        name="searchString" 
                        value="@ViewData["CurrentFilter"]" 
@@ -49,22 +52,23 @@
         </form>
     
         <hr/>
-
-        ---
     
+        @* Grilla de visualización de productos en formato de tarjetas informativas. *@
         <div class="products-grid">
+            @* Iteración sobre el modelo para la renderización individual de productos. *@
             @foreach (var item in Model)
             {
                     <div class="product-card">
                         <div class="product-image-container">
-
-                            <img src="@Url.Content(item.proImagen)" alt="@item.proNombre" class="product-image"/>
+                            @* Resolución de la ruta del recurso visual del producto mediante ImageHelper. *@
+                            <img src="@Url.Content(ImageHelper.FormatearRuta(item.proImagen))" alt="@item.proNombre" class="product-image"/>
                         </div>
                         <div class="product-details">
                             <h2 class="product-name">@Html.DisplayFor(modelItem => item.proNombre)</h2>
                             <p class="product-price">$ @Html.DisplayFor(modelItem => item.proPrecio)</p>
                             <p class="product-availability">
-                                **Disponibilidad:**
+                                <strong>Disponibilidad:</strong>
+                                @* Aplicación condicional de estilos basada en el estado de stock del producto. *@
                                 <span class="@(item.Disponible ? "available" : "unavailable")">
                                     @(item.Disponible ? "DISPONIBLE" : "AGOTADO")
                                 </span>
@@ -80,6 +84,7 @@
             }
         </div>
 
+        @* Notificación de ausencia de resultados tras la aplicación de filtros o carga inicial vacía. *@
         @if (!Model.Any())
         {
                 <p class="no-products">No hay productos cargados en el sistema.</p>

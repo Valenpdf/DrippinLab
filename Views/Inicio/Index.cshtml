@@ -1,28 +1,30 @@
-﻿@* Views/Inicio/Index.cshtml *@
-
-
 @using Drippin.DTO
 
 @{
-    ViewData["Title"] = "Inicio";
-    
+    ViewData["Title"] = "Panel de Inicio";
 }
 
-<h1>Bienvenido al Panel Principal</h1>
+<h1 class="text-white">Bienvenido al Panel Principal</h1>
 
-<h2>Datos extraídos de Claims:</h2>
-<p><strong>ID:</strong> @ViewBag.IdUsuario</p>
-<p><strong>Nombre:</strong> @ViewBag.UsNombre</p>
-<p><strong>Apellido:</strong> @ViewBag.UsApellido</p>
-<p><strong>Correo:</strong> @ViewBag.UsCorreo</p>
-<p><strong>Rol:</strong> @ViewBag.Rol</p>
+@* Visualización de atributos de identidad recuperados del contexto de autenticación (Claims). *@
+<div class="text-white">
+    <h2>Datos de Sesión (Claims):</h2>
+    <p><strong>ID:</strong> @ViewBag.IdUsuario</p>
+    <p><strong>Nombre:</strong> @ViewBag.UsNombre</p>
+    <p><strong>Apellido:</strong> @ViewBag.UsApellido</p>
+    <p><strong>Correo:</strong> @ViewBag.UsCorreo</p>
+    <p><strong>Rol:</strong> @ViewBag.Rol</p>
+</div>
 
-<hr/>
+<hr class="text-white"/>
 
-<h2>Datos extraídos de ViewBag.UsuarioDTO:</h2>
-@{
-    var usuarioDto = (UsuariosDTO)ViewBag.UsuarioDTO;
-}
-<p><strong>Nombre DTO:</strong> @usuarioDto.UsNombre</p>
-<p><strong>Apellido DTO:</strong> @usuarioDto.UsApellido</p>
-<p><strong>Correo DTO:</strong> @usuarioDto.UsCorreo</p>
+@* Renderización de información extendida del usuario mediante el objeto de transferencia de datos (DTO) provisto. *@
+<div class="text-white">
+    <h2>Información del Perfil (DTO):</h2>
+    @{
+        var usuarioDto = (UsuariosDTO)ViewBag.UsuarioDTO;
+    }
+    <p><strong>Nombre DTO:</strong> @usuarioDto.UsNombre</p>
+    <p><strong>Apellido DTO:</strong> @usuarioDto.UsApellido</p>
+    <p><strong>Correo DTO:</strong> @usuarioDto.UsCorreo</p>
+</div>

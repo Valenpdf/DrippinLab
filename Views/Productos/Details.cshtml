@@ -1,5 +1,10 @@
-﻿@model Drippin.Models.Producto
+@model Drippin.Models.Producto
+@* Vista retornada por: ProductosController.Details *@
 
+@* 
+   Renderización delegada del detalle de producto mediante el componente parcial de producto destacado. 
+   Este enfoque permite la reutilización de la lógica visual del recurso destacado en la vista de detalle.
+*@
 @await Html.PartialAsync("_ProductoDestacadoPartial", Model)
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />

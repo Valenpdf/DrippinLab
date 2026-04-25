@@ -1,13 +1,14 @@
-﻿@model Drippin.Models.Role
+@model Drippin.Models.Role
+@* Vista retornada por: RolesController.Details *@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Rol";
 }
 
-<h1>Details</h1>
+<h1 class="text-white">Especificación del Rol</h1>
 
-<div>
-    <h4>Role</h4>
+<div class="text-white">
+    <h4>Atributos Definidos</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,7 +19,8 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdRol">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    @* Navegación a las funciones de edición o retorno al listado principal. *@
+    <a asp-action="Edit" asp-route-id="@Model?.IdRol" class="btn btn-primary">Editar Registro</a> |
+    <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
 </div>

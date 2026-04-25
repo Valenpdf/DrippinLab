@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "Panel de Administrador";
+@* Vista retornada por: InicioController.PanelAdmin *@
+@{
+    ViewData["Title"] = "Panel de Administración";
 }
 
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -15,9 +16,10 @@
 
         <hr class="panel-hr" />
 
+        @* Módulos operativos del sistema distribuidos en componentes de tarjeta interactivos. *@
         <div class="row g-4 mt-5" id="paneladmin-box">
         
-            @* Tarjeta para Gestión de Usuarios *@
+            @* Módulo de Administración de Entidades de Usuario. *@
             <div class="col-md-6">
                 <div class="admin-card h-100 shadow-dark">
                     <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -31,7 +33,7 @@
                 </div>
             </div>
 
-            @* Tarjeta para Gestión de Productos *@
+            @* Módulo de Administración de Catálogo de Productos. *@
             <div class="col-md-6">
                 <div class="admin-card h-100 shadow-dark">
                     <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -45,7 +47,7 @@
                 </div>
             </div>
         
-            @* Tarjeta para Gestión de Categorias *@
+            @* Módulo de Organización de Categorías de Productos. *@
             <div class="col-md-6">
                 <div class="admin-card h-100 shadow-dark">
                     <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -59,7 +61,7 @@
                 </div>
             </div>
         
-            @* Tarjeta para Gestión de Roles *@
+            @* Módulo de Gestión de Perfiles y Roles de Seguridad. *@
             <div class="col-md-6">
                 <div class="admin-card h-100 shadow-dark">
                     <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -68,6 +70,20 @@
                         <p class="admin-card-text">Revisa los roles existentes</p>
                         <a asp-controller="Roles" asp-action="Index" class="btn-primary-drippin btn-red-accent mt-auto">
                             Ir a Roles
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            @* Módulo de Gestión de Tandas y Colecciones Temporales (Drops). *@
+            <div class="col-md-6">
+                <div class="admin-card h-100 shadow-dark">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="fa-solid fa-layer-group fa-4x text-accent-light mb-4"></i>
+                        <h5 class="admin-card-title">Gestión de Tandas</h5>
+                        <p class="admin-card-text">Administra los drops y colecciones que se muestran en el Index.</p>
+                        <a asp-controller="Tandas" asp-action="Index" class="btn-primary-drippin mt-auto">
+                            Ir a Tandas
                         </a>
                     </div>
                 </div>

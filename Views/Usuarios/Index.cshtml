@@ -1,11 +1,11 @@
-﻿@model IEnumerable<Drippin.Models.Usuario>
+@model IEnumerable<Drippin.Models.Usuario>
+@* Vista retornada por: UsuariosController.Index *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Usuarios";
 }
 
 <style>
-
     th {
         color: white;
     }
@@ -21,26 +21,27 @@
     div {
         color: white;
     }
-
 </style>
 
-<h1>Index</h1>
+<h1>Administración de Usuarios</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Registrar Nuevo Usuario</a>
 </p>
-<table class="table">
+
+@* Grilla de visualización para la supervisión y gestión de cuentas de usuario. *@
+<table class="table text-white">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.UsNombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UsCorreo)
+                @Html.DisplayNameFor(model => model.UsApellido)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PasswordHash)
-            </th>
+                @Html.DisplayNameFor(model => model.UsCorreo)
+            </th>            
             <th>
                 @Html.DisplayNameFor(model => model.IdRol)
             </th>
@@ -53,39 +54,40 @@
             <th>
                 @Html.DisplayNameFor(model => model.FechaExpiracionToken)
             </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsNombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsCorreo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PasswordHash)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRol)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaRegistro)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Token)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaExpiracionToken)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdUsuario">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdUsuario">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdUsuario">Delete</a>
-            </td>
-        </tr>
-}
+        @* Iteración sobre el conjunto de identidades registradas en el sistema. *@
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UsNombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UsApellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UsCorreo)
+                    </td>           
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdRol)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaRegistro)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Token)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaExpiracionToken)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-info">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-light">Detalles</a> |
+                        <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+        }
     </tbody>
 </table>

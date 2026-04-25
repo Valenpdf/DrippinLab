@@ -1,0 +1,80 @@
+@model Drippin.Models.Tanda
+@* Vista retornada por: TandasController.Delete *@
+
+@{
+    ViewData["Title"] = "Eliminar Tanda";
+}
+
+<link rel="stylesheet" href="~/css/adminproductos.css" />
+<link rel="stylesheet" href="~/css/paneladmin-proEdit.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/tandas.css" />
+
+<div class="content-container form-view">
+    <div class="header-actions">
+        <h1>ELIMINAR TANDA</h1>
+    </div>
+
+    <hr />
+
+    <div class="form-card">
+
+        @* Notificación de advertencia sobre la irreversibilidad de la operación de baja. *@
+        <div style="background:#2a1010; border:1px solid #8a2d2d; padding:1.2rem 1.5rem; margin-bottom:2rem;">
+            <p style="color:#ff6666; font-weight:700; margin:0 0 0.5rem 0; letter-spacing:1px;">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                ¿CONFIRMAR LA ELIMINACIÓN DE LA TANDA?
+            </p>
+            <p style="color:#aaa; font-size:0.82rem; margin:0;">
+                Esta acción es definitiva. Los productos vinculados perderán su asociación a esta tanda pero no serán eliminados del catálogo.
+            </p>
+        </div>
+
+        @* Despliegue de metadatos del registro para validación previa a la eliminación. *@
+        <div style="margin-bottom:2rem;">
+            <dl class="row" style="color:#e0e0e0;">
+                <dt class="col-sm-3" style="color:#888;">Identificador</dt>
+                <dd class="col-sm-9">@Model.TanNombre</dd>
+
+                <dt class="col-sm-3" style="color:#888;">Estado de Visibilidad</dt>
+                <dd class="col-sm-9">
+                    @if (Model.TanVisible)
+                    {
+                        <span class="badge-visible">Visible en el Catálogo</span>
+                    }
+                    else
+                    {
+                        <span class="badge-oculto">Oculta</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3" style="color:#888;">Productos Afectados</dt>
+                <dd class="col-sm-9">@(Model.Productos?.Count ?? 0) unidad(es)</dd>
+
+                @if (Model.TanFechaInicio.HasValue)
+                {
+                    <dt class="col-sm-3" style="color:#888;">Periodo Inicial</dt>
+                    <dd class="col-sm-9">@Model.TanFechaInicio.Value.ToString("dd/MM/yyyy")</dd>
+                }
+
+                @if (Model.TanFechaFin.HasValue)
+                {
+                    <dt class="col-sm-3" style="color:#888;">Periodo Final</dt>
+                    <dd class="col-sm-9">@Model.TanFechaFin.Value.ToString("dd/MM/yyyy")</dd>
+                }
+            </dl>
+        </div>
+
+        @* Ejecución de la solicitud de eliminación mediante persistencia de ID. *@
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="TandaId" />
+            <div class="form-actions">
+                <button type="submit" class="btn-delete-drippin" style="padding:0.7rem 1.5rem; font-size:0.85rem;">
+                    <i class="fa-solid fa-trash me-1"></i> Confirmar Eliminación
+                </button>
+                <a asp-action="Index" class="btn-back-drippin">Cancelar Operación</a>
+            </div>
+        </form>
+
+    </div>
+</div>

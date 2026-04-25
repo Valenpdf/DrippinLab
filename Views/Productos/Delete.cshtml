@@ -1,11 +1,11 @@
-﻿@model Drippin.Models.Producto
+@model Drippin.Models.Producto
+@* Vista retornada por: ProductosController.Delete *@
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Producto";
 }
 
 <style>
-
     th {
         color: white;
     }
@@ -17,16 +17,15 @@
     h1 {
         color: white;
     }
-
 </style>
 
-<h1>Delete</h1>
+<h1>Eliminar Producto</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Está seguro de que desea eliminar este registro del catálogo?</h3>
 <div>
-    <h4>Producto</h4>
+    <h4>Detalles del Producto</h4>
     <hr />
-    <dl class="row">
+    <dl class="row text-white">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.proNombre)
         </dt>
@@ -78,8 +77,9 @@
     </dl>
     
     <form asp-action="Delete">
+        @* Persistencia del identificador único para la ejecución de la eliminación en el servidor. *@
         <input type="hidden" asp-for="proId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Confirmar Eliminación" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
     </form>
 </div>

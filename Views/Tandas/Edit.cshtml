@@ -1,0 +1,84 @@
+@model Drippin.Models.Tanda
+@* Vista retornada por: TandasController.Edit *@
+
+@{
+    ViewData["Title"] = "Editar Tanda";
+}
+
+<link rel="stylesheet" href="~/css/adminproductos.css" />
+<link rel="stylesheet" href="~/css/paneladmin-proEdit.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/tandas.css" />
+
+<div class="content-container form-view">
+    <div class="header-actions">
+        <h1>EDITAR TANDA</h1>
+    </div>
+
+    <hr />
+
+    <div class="form-card">
+        <form asp-action="Edit" asp-route-id="@Model.TandaId">
+            @* Proyección de errores de validación de modelo capturados en el servidor. *@
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+            @* Persistencia del identificador único de la tanda para la actualización del registro. *@
+            <input type="hidden" asp-for="TandaId" />
+
+            <div class="form-group">
+                <label asp-for="TanNombre" class="control-label"></label>
+                <input asp-for="TanNombre" class="form-control" />
+                <span asp-validation-for="TanNombre" class="text-danger"></span>
+            </div>
+
+            @* 
+               Control de visibilidad pública para la tanda. 
+               Habilita la renderización intercalada en la página principal del catálogo. 
+            *@
+            <div class="form-group">
+                <label class="control-label checkbox-label">
+                    <input class="form-check-input" asp-for="TanVisible" />
+                    <span class="checkbox-text">@Html.DisplayNameFor(model => model.TanVisible)</span>
+                </label>
+                <p style="font-size:0.75rem; color:#888; margin-top:0.3rem;">
+                    Al habilitar este campo, la tanda se proyectará dinámicamente entre la grilla de productos del inicio.
+                </p>
+            </div>
+
+            @* Campos cronológicos opcionales para la especificación del periodo de vigencia de la tanda. *@
+            <div class="form-group">
+                <label asp-for="TanFechaInicio" class="control-label">
+                    Fecha de Inicio <span class="fecha-opcional-label">(Opcional)</span>
+                </label>
+                <input asp-for="TanFechaInicio" class="form-control" type="datetime-local" />
+                <span asp-validation-for="TanFechaInicio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TanFechaFin" class="control-label">
+                    Fecha de Fin <span class="fecha-opcional-label">(Opcional)</span>
+                </label>
+                <input asp-for="TanFechaFin" class="form-control" type="datetime-local" />
+                <span asp-validation-for="TanFechaFin" class="text-danger"></span>
+            </div>
+
+            @* Nota técnica sobre el desacoplamiento entre las fechas registradas y el estado de visibilidad activa. *@
+            <div style="background:#1a1a1a; border-left:3px solid #555; padding:0.8rem 1rem; margin-bottom:1.5rem; font-size:0.78rem; color:#aaa;">
+                <i class="fa-solid fa-circle-info me-2"></i>
+                Los campos cronológicos tienen carácter <strong>informativo</strong>. La lógica de visualización depende estrictamente del parámetro de visibilidad manual.
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit-drippin">
+                    <i class="fas fa-save me-1"></i> Guardar Cambios
+                </button>
+                <a asp-action="Index" class="btn-back-drippin">Volver a la Lista</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @* Inyección de recursos para la validación asíncrona de formularios en el cliente. *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

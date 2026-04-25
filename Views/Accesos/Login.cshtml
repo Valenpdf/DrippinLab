@@ -1,77 +1,176 @@
-﻿@model Drippin.Models.ViewModel.LoginViewModel
+@model Drippin.Models.ViewModel.LoginViewModel
+@* Vista retornada por: AccesosController.Login *@
 
 @{
     ViewData["Title"] = "Iniciar Sesión";
 }
 
 <style>
-
-    th {
-        color: white;
+    @* Contenedor principal para el posicionamiento centralizado del formulario de acceso. *@
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: -55px;
+        padding: 4rem 1rem;
+        min-height: 70vh;
     }
 
-    td {
-        color: white;
+    @* Estructura del cuadro de login con propiedades de opacidad y profundidad. *@
+    .login-box {
+        background-color: #1a1a1a;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        max-width: 420px;
+        width: 100%;
+        color: #fff;
     }
 
-    h1 {
-        color: white;
+    .login-box h1 {
+        color: #fff;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
     }
 
-    div {
-        color: white;
+    @* Definición de estilos para los campos de entrada de datos en esquemas oscuros. *@
+    .login-box .form-control {
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #555;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+    }
+
+    .login-box .form-control:focus {
+        background-color: #444;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        color: #fff;
+    }
+
+    @* Sobrescritura de estilos de validación para garantizar legibilidad en fondos oscuros. *@
+    .login-box .text-danger {
+        color: #dc3545 !important;
+    }
+
+    @* Configuración del resumen de validación de modelos. *@
+    .login-box [asp-validation-summary="ModelOnly"] ul {
+        padding-left: 0;
+        list-style: none;
+        color: #dc3545 !important;
+        margin-bottom: 1rem;
+    }
+
+    @* Estilos para el control de persistencia de sesión (Recordarme). *@
+    .login-box .form-check-label {
+        color: #eee;
+    }
+
+    .login-box .form-check-input {
+        background-color: #333;
+        border-color: #555;
+    }
+
+    .login-box .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    @* Estilos del control de acción principal. *@
+    .login-box .btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+
+    @* Organización de enlaces de navegación secundaria y recuperación de cuenta. *@
+    .login-box .links-container {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .login-box .links-container a {
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+    .login-box .links-container a:hover {
+        text-decoration: underline;
+    }
+
+    .login-box .links-container span {
+        color: #888;
+        margin: 0 0.5rem;
+    }
+
+    @* Gestión de espaciado para alertas de notificación temporal. *@
+    .login-box .alert {
+        margin-bottom: 1.5rem;
+    }
+    
+    .login-box .control-label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
     }
 
 </style>
 
+<div class="login-container">
+    <div class="login-box">
 
-<h1>Iniciar Sesión</h1>
-<hr />
+        <h1>Iniciar Sesión</h1>
 
-@* Muestra mensajes temporales (Ej: "Registro exitoso", "Cerraste sesión") *@
-@if (TempData["SuccessMessage"] != null)
-{
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["InfoMessage"] != null)
-{
-        <div class="alert alert-info">@TempData["InfoMessage"]</div>
-}
-@if (TempData["Error"] != null)
-{
-        <div class="alert alert-danger">@TempData["Error"]</div>
-}
+        @* 
+           Bloques condicionales para la renderización de notificaciones de estado (éxito, información o error)
+           provenientes del diccionario TempData del controlador.
+        *@
+        @if (TempData["SuccessMessage"] != null)
+        {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["InfoMessage"] != null)
+        {
+                <div class="alert alert-info">@TempData["InfoMessage"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+        }
 
-<div class="row">
-    <div class="col-md-4">
         <form asp-action="Login">
-            @* Muestra errores generales de validación (Ej: Credenciales incorrectas) *@
+            @* Proyección del resumen de validación para errores globales del modelo. *@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="form-group">
+
+            <div class="form-group mb-3">
                 <label asp-for="UsCorreo" class="control-label"></label>
                 <input asp-for="UsCorreo" class="form-control" />
                 <span asp-validation-for="UsCorreo" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
+
+            <div class="form-group mb-3">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            
-            <div class="form-group form-check">
+
+            @* Control para la gestión de cookies de autenticación persistentes. *@
+            <div class="form-check mb-4">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Recordarme" /> @Html.DisplayNameFor(model => model.Recordarme)
                 </label>
             </div>
-            
+
             <div class="form-group mt-3">
                 <input type="submit" value="Acceder" class="btn btn-primary" />
             </div>
 
-            <div class="mt-3">
-                <a asp-action="Registrarse">¿No tienes cuenta? Regístrate aquí</a> |
+            <div class="links-container mt-3">
+                <a asp-action="Registrarse">¿No tienes cuenta? Regístrate</a>
+                <span>|</span>
                 <a asp-action="StartRecovery">¿Olvidaste tu contraseña?</a>
             </div>
         </form>
@@ -79,6 +178,7 @@
 </div>
 
 @section Scripts {
+    @* Inyección de scripts de validación en el lado del cliente. *@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

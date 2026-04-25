@@ -4,18 +4,19 @@
     background-color: black;
     padding: 15px;
     border-radius: 10px;
-    /* Eliminar/Comentar anchos fijos y márgenes negativos para mobile */
+    /* Eliminar/Comentar anchos fijos y mï¿½rgenes negativos para mobile */
     /* margin-left: -100px; */
     /* width: 500px; */
-    width: auto; /* Permite que ocupe el ancho disponible */
+    width: auto;
+    /* Permite que ocupe el ancho disponible */
     /* 1. Habilita Grid */
     display: grid;
-    /* 2. Define las áreas del layout: Pila vertical (una columna) */
+    /* 2. Define las ï¿½reas del layout: Pila vertical (una columna) */
     grid-template-areas:
         "header"
         "main"
         "sidebar";
-    /* 3. Define el tamaño de la columna: Una columna que ocupa todo el espacio (1fr) */
+    /* 3. Define el tamaï¿½o de la columna: Una columna que ocupa todo el espacio (1fr) */
     grid-template-columns: 1fr;
     /* 4. Define el espacio entre filas y columnas */
     gap: 15px;
@@ -23,12 +24,14 @@
 
 .titulo-carrito {
     grid-area: header;
-    color: white; /* Ejemplo de estilo */
+    color: white;
+    /* Ejemplo de estilo */
 }
 
 .carrito-lista {
     grid-area: main;
-    color: white; /* Ejemplo de estilo */
+    color: white;
+    /* Ejemplo de estilo */
     /* width: 450px; -> Eliminar ancho fijo en Mobile */
     width: auto;
 }
@@ -39,12 +42,12 @@
     color: white !important;
 }
 
-    .producto-link:hover {
-        background-color: transparent;
-        color: #1C1C1C !important;
-        transform: none;
-        box-shadow: none;
-    }
+.producto-link:hover {
+    background-color: transparent;
+    color: #1C1C1C !important;
+    transform: none;
+    box-shadow: none;
+}
 
 
 /*//////////////////////////// -  - /////////////////////////*/
@@ -52,23 +55,28 @@
 /*/////////// - RECIBO CARRITO - //////////////*/
 
 .resumen-container {
-    background-image: url('/images/drippinticket.png'); /* Imagen de fondo del ticket */
-    background-repeat: repeat-y; /* Repite hacia abajo */
-    background-size: 100% auto; /* Ajuste perfecto al ancho */
+    background-image: url('/images/drippinticket.png');
+    /* Imagen de fondo del ticket */
+    background-repeat: repeat-y;
+    /* Repite hacia abajo */
+    background-size: 100% auto;
+    /* Ajuste perfecto al ancho */
     background-position: top center;
     background-color: #ffffff;
     width: 324px !important;
-    max-width: 340px; /* Ancho del ticket */
+    max-width: 340px;
+    /* Ancho del ticket */
     margin: 20px auto;
     padding: 25px 20px;
-    
-    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
     font-family: 'Courier New', Courier, monospace;
     color: #000000;
-    overflow: hidden; /* Esto permite que crezca según los productos */
+    overflow: hidden;
+    /* Esto permite que crezca segï¿½n los productos */
 }
 
-/* Título */
+/* Tï¿½tulo */
 .drippin-title {
     font-size: 2rem;
     font-weight: 900;
@@ -78,14 +86,14 @@
     font-family: 'Impact', sans-serif;
 }
 
-/* Info pequeña arriba */
+/* Info pequeï¿½a arriba */
 .receipt-info {
     font-size: 0.8rem;
     margin-bottom: 12px;
     text-align: center;
 }
 
-/* Línea separadora estilo ticket */
+/* Lï¿½nea separadora estilo ticket */
 .receipt-divider {
     border: none;
     border-top: 1px dashed #333;
@@ -98,7 +106,7 @@
     font-size: 0.9rem;
     text-transform: uppercase;
     margin-bottom: 5px;
-    /* Asegurar que la fila de encabezados esté separada por espacios */
+    /* Asegurar que la fila de encabezados estï¿½ separada por espacios */
     display: flex;
     justify-content: space-between;
 }
@@ -117,12 +125,14 @@
 /* Imagen del producto */
 .carrito-img img {
     flex-shrink: 0;
-    width: 30px; /* Tamaño ajustado */
+    width: 30px;
+    /* Tamaï¿½o ajustado */
     height: 30px;
-    object-fit: cover; /* Mantiene proporción sin deformar */
+    object-fit: cover;
+    /* Mantiene proporciï¿½n sin deformar */
     text-align: left;
     overflow: hidden;
-     /* Añadir margen derecho aquí para separar de ITEM */
+    /* Aï¿½adir margen derecho aquï¿½ para separar de ITEM */
 }
 
 
@@ -141,9 +151,11 @@
     /* font-weight: bold;*/
     width: 84px;
     text-align: right;
-    display: flex; /* Usar flex para alinear precio y botón de remover */
+    display: flex;
+    /* Usar flex para alinear precio y botï¿½n de remover */
     align-items: center;
-    justify-content: flex-end; /* Alinear contenido a la derecha */
+    justify-content: flex-end;
+    /* Alinear contenido a la derecha */
 }
 
 .col-img {
@@ -161,7 +173,7 @@
     margin-left: 10px;
 }
 
-/* Botón eliminar */
+/* Botï¿½n eliminar */
 .btn-carrito-remove {
     width: 10px;
     height: 10px;
@@ -170,19 +182,21 @@
     border: 1px solid #dc3545;
     font-size: 0.8rem;
     padding: 0;
-    margin-left: 5px; /* Pequeño margen para separar de la cifra del precio */
+    margin-left: 5px;
+    /* Pequeï¿½o margen para separar de la cifra del precio */
     margin-right: -10px;
     line-height: 1;
     cursor: pointer;
-    align-self: center; /* Asegura el centrado vertical */
+    align-self: center;
+    /* Asegura el centrado vertical */
 }
 
-    .btn-carrito-remove:hover {
-        background-color: #dc3545;
-        color: white;
-    }
+.btn-carrito-remove:hover {
+    background-color: #dc3545;
+    color: white;
+}
 
-/* EXPANSIÓN AUTOMÁTICA DEL CONTENEDOR */
+/* EXPANSIï¿½N AUTOMï¿½TICA DEL CONTENEDOR */
 .resumen-container:has(.carrito-item:nth-child(3)) {
     max-height: 350px;
 }
@@ -205,39 +219,81 @@
 
 
 
+
+/* TEXTO INSTRUCCIONES TICKET */
+.ticket-and-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ticket-instructions p {
+    text-align: center;
+    color: white !important;
+    font-size: 0.95rem;
+    margin-top: 15px;
+    padding: 0 15px;
+}
+
+.ticket-instructions a {
+    color: white !important;
+    text-decoration: underline;
+}
+
+.ticket-instructions a:hover {
+    color: #ccc !important;
+}
+
 /* //////////// - MEDIA QUERYS - ////////////////*/
 
 @media (min-width: 1024px) {
 
     .contenedor-carrito {
-        /* Se pueden reintroducir anchos fijos y márgenes negativos si el layout del sitio lo requiere,
+        /* Se pueden reintroducir anchos fijos y mï¿½rgenes negativos si el layout del sitio lo requiere,
            pero es mejor usar 'max-width' y 'margin: 0 auto;' para centrarlo.
-           Usaremos las propiedades originales pero con un 'max-width' más flexible. */
-        max-width: 1500px; /* Ancho máximo para pantallas grandes */
+           Usaremos las propiedades originales pero con un 'max-width' mï¿½s flexible. */
+        max-width: 1500px;
+        /* Ancho mï¿½ximo para pantallas grandes */
         width: 100%;
-        flex-direction:column;
-        display:flex;
-        margin: 0 auto; /* Centrar el contenedor */
+        flex-direction: column;
+        display: flex;
+        margin: 0 auto;
+        /* Centrar el contenedor */
         /* 1. Cambia la estructura a dos columnas */
         grid-template-areas:
             "header header"
             "main   sidebar";
-        /* 2. Define el tamaño de las columnas: 2/3 para la lista y 1/3 para el resumen */
-        /* Usamos '1fr' y 'auto' o una proporción '2fr 1fr' para un mejor control del espacio */
-        grid-template-columns: 1fr 1fr; /* Mejor proporción: 2/3 y 1/3 */
+        /* 2. Define el tamaï¿½o de las columnas: 2/3 para la lista y 1/3 para el resumen */
+        /* Usamos '1fr' y 'auto' o una proporciï¿½n '2fr 1fr' para un mejor control del espacio */
+        grid-template-columns: 1fr 1fr;
+        /* Mejor proporciï¿½n: 2/3 y 1/3 */
         /* El 'gap: 15px;' se hereda del estilo base, no hace falta repetirlo */
     }
 
-    
+
 
     .resumen-container {
-        
         margin-left: 10px;
-        margin-bottom: 30px;
-        
+        margin-bottom: 0;
     }
 
-    /* Asigna cada elemento a su área (ya definido en el base, solo confirmamos las áreas que ya se ajustaron) */
+    /* Layout para el wrapper del ticket y el texto en desktop */
+    .ticket-and-text-wrapper {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 30px;
+    }
+
+    .ticket-instructions {
+        text-align: left;
+        margin-top: 0;
+        margin-left: 25px;
+        max-width: 300px;
+
+    }
+
+    /* Asigna cada elemento a su rea (ya definido en el base, solo confirmamos las reas que ya se ajustaron) */
     .titulo-carrito {
         grid-area: header;
     }
@@ -246,7 +302,7 @@
         font-size: 0.8rem;
 
     }
-    
+
     .carrito-precio {
         width: 96px;
 
@@ -258,5 +314,5 @@
         width: 100%;
     }
 
-    
+
 }

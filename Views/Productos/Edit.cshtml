@@ -1,4 +1,5 @@
-﻿@model Drippin.Models.Producto
+@model Drippin.Models.Producto
+@* Vista retornada por: ProductosController.Edit *@
 
 @{
     ViewData["Title"] = ViewData["Editar"] + "Producto" ;
@@ -17,9 +18,10 @@
 
     <div class="form-card">
         <form asp-action="Edit" asp-route-id="@Model.proId" enctype="multipart/form-data" >
+            @* Proyección de errores de validación de modelo capturados en el servidor. *@
             <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
             
-            @* Campo oculto para el ID en caso de Editar *@
+            @* Persistencia del identificador único del producto para la actualización del registro. *@
             @if (ViewData["Action"].ToString() == "Edit")
             {
                     <input type="hidden" asp-for="proId" />
@@ -42,6 +44,20 @@
                 <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.CategoriaId"></select>
                 <span asp-validation-for="CategoriaId" class="text-danger"></span>
             </div>
+
+            @* 
+               Asociación opcional a una Tanda o Colección específica. 
+               Permite la agrupación temática de productos para su visualización en el inicio. 
+            *@
+            <div class="form-group">
+                <label asp-for="proTandaId" class="control-label">
+                    Tanda / Colección <span class="fecha-opcional-label">(Opcional)</span>
+                </label>
+                <select asp-for="proTandaId" class="form-control" asp-items="ViewBag.TandaId">
+                    <option value="">— Sin tanda —</option>
+                </select>
+                <span asp-validation-for="proTandaId" class="text-danger"></span>
+            </div>
             
             <div class="form-group">
                 <label asp-for="Disponible" class="control-label checkbox-label">
@@ -54,86 +70,75 @@
                         <span class="checkbox-text">@Html.DisplayNameFor(model => model.EsDestacado)</span>
             </label>
 
-           @* CAMPO DE SUBIDA DE ARCHIVO (Principal) *@
+            @* Controles de carga de archivos para la actualización de recursos visuales. *@
             <div class="form-group file-upload-group">
                 <label for="fileUpload" class="control-label file-upload-label">
                     <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Principal (wwwroot/images/*)
                 </label>
-    
                 <input type="file" id="fileUpload" name="imagenSubida" class="form-control custom-file-input" accept="image/*" />
-    
-                @* Muestra el mensaje de error de validación manual *@
                 <span class="text-danger">
                     @Html.ValidationMessage("imagenSubida")
                 </span>
             </div>
-            @* Campo Original para la URL/Ruta (oculto si usas subida) *@
+            @* Mantenimiento de la ruta original del recurso visual para persistencia condicional. *@
             <input type="hidden" asp-for="proImagen" />    
 
-            @* --- CAMPO 2: IMAGEN SECUNDARIA 2 --- *@
-                    <div class="form-group file-upload-group">
-                        <label for="imagenSecundaria2" class="control-label file-upload-label secondary-upload-label">
-                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 2
-                        </label>
-                        <input type="file" id="imagenSecundaria2" name="imagenSecundaria2" class="form-control custom-file-input" accept="image/*" />
-                        <input type="hidden" asp-for="proImagen2" />
-                    </div>
+            <div class="form-group file-upload-group">
+                <label for="imagenSecundaria2" class="control-label file-upload-label secondary-upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 2
+                </label>
+                <input type="file" id="imagenSecundaria2" name="imagenSecundaria2" class="form-control custom-file-input" accept="image/*" />
+                <input type="hidden" asp-for="proImagen2" />
+            </div>
 
-                    @* --- CAMPO 3: IMAGEN SECUNDARIA 3 --- *@
-                    <div class="form-group file-upload-group">
-                        <label for="imagenSecundaria3" class="control-label file-upload-label secondary-upload-label">
-                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 3
-                        </label>
-                        <input type="file" id="imagenSecundaria3" name="imagenSecundaria3" class="form-control custom-file-input" accept="image/*" />
-                        <input type="hidden" asp-for="proImagen3" />
-                    </div>
-                    
-                    @* --- CAMPO 4: IMAGEN SECUNDARIA 4 --- *@
-                    <div class="form-group file-upload-group">
-                        <label for="imagenSecundaria4" class="control-label file-upload-label secondary-upload-label">
-                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 4
-                        </label>
-                        <input type="file" id="imagenSecundaria4" name="imagenSecundaria4" class="form-control custom-file-input" accept="image/*" />
-                        <input type="hidden" asp-for="proImagen4" />
-                    </div>
+            <div class="form-group file-upload-group">
+                <label for="imagenSecundaria3" class="control-label file-upload-label secondary-upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 3
+                </label>
+                <input type="file" id="imagenSecundaria3" name="imagenSecundaria3" class="form-control custom-file-input" accept="image/*" />
+                <input type="hidden" asp-for="proImagen3" />
+            </div>
+            
+            <div class="form-group file-upload-group">
+                <label for="imagenSecundaria4" class="control-label file-upload-label secondary-upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 4
+                </label>
+                <input type="file" id="imagenSecundaria4" name="imagenSecundaria4" class="form-control custom-file-input" accept="image/*" />
+                <input type="hidden" asp-for="proImagen4" />
+            </div>
 
-            @* --- PREVISUALIZACIÓN DE IMÁGENES ACTUALES (Principal y Secundarias) --- *@
-
-@* --- PREVISUALIZACIÓN DE IMÁGENES ACTUALES --- *@
-
-@* Solo mostramos el recuadro si hay al menos una imagen *@
+@* Bloque de previsualización y gestión de eliminación selectiva de recursos visuales persistidos. *@
 @if (!string.IsNullOrEmpty(Model.proImagen) || !string.IsNullOrEmpty(Model.proImagen2) || !string.IsNullOrEmpty(Model.proImagen3) || !string.IsNullOrEmpty(Model.proImagen4))
 {
         <div class="image-preview-wrapper mb-4">
             <div class="preview-header">
                 <h4>Imágenes Actuales</h4>
-                <p>Marca la casilla para eliminar una imagen. La imagen principal debe ser reemplazada inmediatamente si se elimina.</p>
+                <p>Seleccione las casillas correspondientes para marcar recursos para su eliminación. La imagen principal requiere reemplazo inmediato si es marcada.</p>
             </div>
         
-            <div class="row g-3"> @* g-3 es el gap de Bootstrap para el espaciado de columnas *@
+            <div class="row g-3">
         
-                @* --- Tarjeta de Imagen Principal --- *@
+                @* Visualización de la imagen principal y control de baja. *@
                 @if (!string.IsNullOrEmpty(Model.proImagen))
                 {
-                        <div class="col-md-12"> @* La principal ocupa todo el ancho de la fila *@
+                        <div class="col-md-12">
                             <div class="current-image-card primary-image-card">
                                 <h5 class="image-card-title">Imagen Principal</h5>
                                 <div class="image-container-main">
-                                    <img src="@Url.Content(Model.proImagen)" alt="Principal" class="product-image-preview"/>
+                                    <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen))" alt="Principal" class="product-image-preview"/>
                                 </div>
                         
-                                @* Checkbox de Eliminación Principal *@
                                 <div class="delete-checkbox-group mt-3">
                                     <input type="checkbox" name="eliminarImagenPrincipal" value="true" class="form-check-input custom-checkbox" id="del_img_1">
                                     <label class="form-check-label text-danger" for="del_img_1">
-                                        **Eliminar Imagen (Requiere reemplazo)**
+                                        <strong>Eliminar Imagen (Requiere reemplazo)</strong>
                                     </label>
                                 </div>
                             </div>
                         </div>
                 }
 
-                @* --- Tarjetas de Imágenes Secundarias (en una nueva fila para alineación) --- *@
+                @* Visualización de imágenes complementarias y controles de baja selectiva. *@
                 @if (!string.IsNullOrEmpty(Model.proImagen2) || !string.IsNullOrEmpty(Model.proImagen3) || !string.IsNullOrEmpty(Model.proImagen4))
                 {
                         <div class="col-12 mt-4">
@@ -142,7 +147,7 @@
                 }
             
                 @{
-                        // Define una lista de imágenes y sus nombres de campo para iterar
+                        @* Definición de matriz de recursos secundarios para su iteración dinámica. *@
                         var secondaryImages = new List<(string url, string name, int index)>
                                 {
                                         (Model.proImagen2, nameof(Model.proImagen2), 2),
@@ -155,14 +160,13 @@
                 {
                         @if (!string.IsNullOrEmpty(img.url))
                         {
-                                <div class="col-md-4 col-sm-6"> @* 3 columnas en desktop, 2 en tablet/mobile *@
+                                <div class="col-md-4 col-sm-6">
                                     <div class="current-image-card secondary-image-card">
                                         <h5 class="image-card-title">Imagen @img.index:</h5>
                                         <div class="image-container-secondary">
-                                            <img src="@Url.Content(img.url)" alt="Secundaria @img.index" class="product-image-preview-small"/>
+                                            <img src="@Url.Content(ImageHelper.FormatearRuta(img.url))" alt="Secundaria @img.index" class="product-image-preview-small"/>
                                         </div>
                             
-                                        @* Checkbox de Eliminación Secundaria *@
                                         <div class="delete-checkbox-group mt-3">
                                             <input type="checkbox" name="eliminarImagen@img.index" value="true" class="form-check-input custom-checkbox" id="del_img_@img.index">
                                             <label class="form-check-label text-light" for="del_img_@img.index">
@@ -177,9 +181,6 @@
         </div>
 }
 
-            
-            
-            @* --- BOTONES DE ACCIÓN --- *@
             <div class="form-actions">
                 <button type="submit" class="btn-submit-drippin" >
                     <i class="fas fa-save"></i> @ViewData["Action"] Producto
@@ -189,18 +190,18 @@
         </form>
     </div>
 
-    
-
 </div>
 
-                        @section Scripts {
-    @* Carga los scripts de validación de ASP.NET *@
+@section Scripts {
+    @* Inyección de recursos para la validación asíncrona de formularios en el cliente. *@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Este script muestra el nombre del archivo seleccionado junto al botón.
-            // Es la forma más sencilla de diferenciar si hay un archivo 'subido' o no en la vista Create/Edit.
+            @* 
+               Funcionalidad de retroalimentación visual para la selección de archivos. 
+               Actualiza dinámicamente las etiquetas de los controles de carga al detectar cambios. 
+            *@
             const fileInputs = document.querySelectorAll('.custom-file-input');
 
             fileInputs.forEach(input => {
@@ -209,17 +210,15 @@
                     input.addEventListener('change', function() {
                         if (this.files && this.files.length > 0) {
                             label.innerHTML = `<i class="fa-solid fa-check me-2"></i> Archivo listo: ${this.files[0].name}`;
-                            label.classList.add('file-ready'); // Clase para cambiar el color de fondo
+                            label.classList.add('file-ready'); 
                         } else {
-                            // Restaurar si el archivo es deseleccionado
                             label.innerHTML = label.getAttribute('data-default-text');
                             label.classList.remove('file-ready');
                         }
                     });
-                    // Guardar el texto original del label
                     label.setAttribute('data-default-text', label.innerHTML);
                 }
             });
         });
     </script>
-    }
+}

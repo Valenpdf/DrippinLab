@@ -1,25 +1,27 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Error del Sistema";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h1 class="text-danger">Excepción Detectada</h1>
+<h2 class="text-danger">Se ha producido un error crítico durante el procesamiento de la solicitud.</h2>
 
+@* Visualización del identificador único de la solicitud para su rastreo en los logs del servidor. *@
 @if (Model.ShowRequestId)
 {
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    <p class="text-white">
+        <strong>ID de Solicitud (Correlation ID):</strong> <code>@Model.RequestId</code>
     </p>
 }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+<div class="text-white">
+    <h3>Modo de Depuración</h3>
+    <p>
+        La activación del entorno de <strong>Desarrollo</strong> permite visualizar detalles técnicos extendidos sobre la excepción ocurrida.
+    </p>
+    @* Advertencia de seguridad sobre la exposición de trazas de error en entornos de producción. *@
+    <p>
+        <strong>El entorno de Desarrollo no debe habilitarse en aplicaciones desplegadas.</strong>
+        La exposición de trazas de excepción puede revelar información sensible de la arquitectura del sistema.
+    </p>
+</div>

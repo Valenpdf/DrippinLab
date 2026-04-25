@@ -1,7 +1,8 @@
-﻿@model Drippin.Models.ViewModel.RecoveryPasswordViewModel
+@model Drippin.Models.ViewModel.RecoveryPasswordViewModel
+@* Vista retornada por: AccesosController.Recovery *@
 @{
     ViewData["Title"] = "Restablecer Contraseña";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Asegúrate de que esta ruta sea correcta
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
@@ -15,16 +16,14 @@
                 </p>
 
                 <form asp-action="Recovery" method="post">
-                    
-                    {{-- Campo Oculto para el Token --}}
-                    {{-- Este campo es CRUCIAL para enviar el Token de vuelta al POST --}}
+                    @* Identificador único de la solicitud de recuperación persistido de forma oculta. *@
                     <input type="hidden" asp-for="Token" />
 
-                    @* Mensaje de Error General *@
+                    @* Proyección de errores de validación de modelo detectados en el servidor. *@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                     <div class="mb-3">
-                        <label asp-for="NewPassword" class="form-label">Contraseña</label>
+                        <label asp-for="NewPassword" class="form-label">Nueva Contraseña</label>
                         <input asp-for="NewPassword" type="password" class="form-control" />
                         <span asp-validation-for="NewPassword" class="text-danger"></span>
                     </div>
@@ -44,7 +43,7 @@
                 </form>
             </div>
             
-            @* Muestra mensajes de error si existen (aunque el controller ya redirige al login) *@
+            @* Renderización condicional de notificaciones de error capturadas durante el flujo de recuperación. *@
             @if (TempData["Error"] != null)
             {
                     <div class="alert alert-danger mt-3 text-center" role="alert">
@@ -56,6 +55,7 @@
 </div>
 
 @section Scripts {
+    @* Carga de librerías para la validación de formularios en el cliente. *@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

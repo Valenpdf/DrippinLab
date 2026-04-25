@@ -1,232 +1,199 @@
-﻿@model Drippin.Models.Producto
+@model Drippin.Models.Producto
+@* Vista retornada por: HomeController.Index *@
 @{
-    ViewData["Title"] = "";
-    var productos = ViewBag.Productos as List<Drippin.Models.Producto>;
+    ViewData["Title"] = "Inicio - Drippin Lab";
+    
+    @* Inicialización de colecciones de datos fundamentales extraídas del contexto de ejecución (ViewBag). *@
+    var productos = ViewBag.Productos as List<Drippin.Models.Producto> ?? new List<Drippin.Models.Producto>();
+    var tandas    = ViewBag.Tandas   as List<Drippin.Models.Tanda>    ?? new List<Drippin.Models.Tanda>();
 }
 
+@* Vinculación de recursos de estilo específicos para la orquestación visual de la página principal. *@
 <link rel="stylesheet" href="~/css/site.css" />
-
-<!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="~/css/swiper.css" />
+<link rel="stylesheet" href="~/css/cards.css" />
+<link rel="stylesheet" href="~/css/tandas.css" />
 
-<link rel="stylesheet" href="~/css/swiper.css" /> <!-- // CSS DEL SWIPER DESTACADO // -->
-
-<link rel="stylesheet" href="~/css/cards.css" /> <!-- // CSS DE LAS CARDS (Productos normales) // -->
-
+@* Renderización condicional de notificaciones de éxito persistidas en el estado temporal (TempData). *@
 @if (TempData["MensajeExito"] != null)
 {
-                <div class="container mt-3">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>Éxito:</strong> @TempData["MensajeExito"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
+    <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Éxito:</strong> @TempData["MensajeExito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
 }
 
-<body>
+<div class="barra-marquee">
+    <div class="marquee-contenido">
+        <span>🔥 Nueva colección ya disponible 🔥 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 💧 Envíos gratis en compras mayores a $30.000 💧 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 💥 ¡Seguinos en Instagram @@drippin.lab! 💥</span>
+    </div>
+</div>
 
-    <div class="barra-marquee">
-        <div class="marquee-contenido">
-            <span>🔥 Nueva colección ya disponible 🔥 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 💧 Envíos gratis en compras mayores a $30.000 💧 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 💥 ¡Seguinos en Instagram @@drippin.lab! 💥</span>
+<div class="todo">
+
+    @* Bloque de visualización para el recurso destacado (Highlight) definido en el modelo. *@
+    @if (Model != null)
+    {
+        <div class="contenedor-destacado">
+
+            <div class="swiper swiper-destacado">
+                <div class="swiper-wrapper">
+                    @if (!string.IsNullOrEmpty(Model.proImagen))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen))" alt="Producto destacado">
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.proImagen2))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen2))" alt="Producto destacado">
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.proImagen3))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen3))" alt="Producto destacado">
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.proImagen4))
+                    {
+                        <div class="swiper-slide">
+                            <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen4))" alt="Producto destacado">
+                        </div>
+                    }
+                </div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+
+            <div class="info-producto">
+                <h5 class="titulo-producto">@Model.proNombre.ToUpper()</h5>
+                <div class="precio">$@Model.proPrecio.ToString("N2")</div>
+                <div class="descripcion">
+                    <div class="descripcion-destacado"><p>Destacado</p></div>
+                    <div class="descripcion-texto">
+                        @if (!string.IsNullOrEmpty(Model.proDescripcion))
+                        {
+                            <p>@Model.proDescripcion</p>
+                        }
+                    </div>
+                    <div class="descripcion-medidas">
+                        @if (!string.IsNullOrEmpty(Model.proMedidas))
+                        {
+                            <p>@Model.proMedidas</p>
+                        }
+                    </div>
+                </div>
+                <a asp-controller="Productos" asp-action="Details" asp-route-id="@Model.proId" class="boton-contacto">
+                    Consultar disponibilidad
+                </a>
+            </div>
+
+        </div>
+    }
+
+    @* Interfaz de control para la gestión de filtros y criterios de ordenamiento de productos. *@
+    <div class="barra-filtros">
+        <button class="boton-filtro" onclick="toggleMenu()">Filtrar ▼</button>
+        <div id="menu-filtros" class="menu-filtros oculto">
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="precio_asc">Precio ascendente</a></li>
+                <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="precio_desc">Precio descendente</a></li>
+                <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="nombre_asc">Nombre A-Z</a></li>
+                <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="nombre_desc">Nombre Z-A</a></li>
+                <li><a asp-controller="Home" asp-action="Index">Reestablecer Orden</a></li>
+            </ul>
         </div>
     </div>
 
-    <div class="todo">
-        <!-- PRODUCTO DESTACADO -->
-        <!-- Contenedor principal del producto destacado -->
-
-        @if (Model != null)
+    @* 
+       Grilla principal de productos. La integración de banners promocionales (tandas) 
+       se realiza de forma asíncrona mediante JavaScript basándose en la configuración del viewport. 
+    *@
+    <div class="contenedor-productos" id="productos-grid">
+        @* Iteración sobre la colección de productos disponibles para la generación de tarjetas informativas. *@
+        @foreach (var p in productos)
         {
-            <div class="contenedor-destacado">
-        
-                <!-- Swiper para imágenes del producto -->
-                <div class="swiper swiper-destacado">
-            
-                    <div class="swiper-wrapper">
+            <div class="card-producto">
+                <a asp-controller="Productos" asp-action="Details" asp-route-id="@p.proId" class="card-producto-link">
+                    <div class="imagen-card">
+                        <img src="@Url.Content(ImageHelper.FormatearRuta(p.proImagen))" alt="Imagen de @p.proNombre" />
+                    </div>
+                    <div class="contenido-card">
+                        <h5 class="titulo">@p.proNombre</h5>
+                        <p class="precio">$@p.proPrecio.ToString("N2")</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
 
-                        <!-- Slides dinámicos (reemplazar con tus imágenes reales) -->
-                        @if (!string.IsNullOrEmpty(Model.proImagen))
-                        {
-                            <div class="swiper-slide">
-                                <img src="@Url.Content(Model.proImagen)" alt="Producto destacado">
-                            </div>
-                        }
-                        @if (!string.IsNullOrEmpty(Model.proImagen2))
-                        {
-                            <div class="swiper-slide">
-                                <img src="@Url.Content(Model.proImagen2)" alt="Producto destacado">
-                            </div>
-                        }
-                        @if (!string.IsNullOrEmpty(Model.proImagen3))
-                        {
-                            <div class="swiper-slide">
-                                <img src="@Url.Content(Model.proImagen3)" alt="Producto destacado">
-                            </div>
-                        }
-                        @if (!string.IsNullOrEmpty(Model.proImagen4))
-                        {
-                        <div class="swiper-slide">
-                            <img src="@Url.Content(Model.proImagen4)" alt="Producto destacado">
+    @* 
+       Contenedor enmascarado para el almacenamiento de banners de tanda.
+       Esta estructura se utiliza como template para la reubicación dinámica de elementos en el DOM.
+    *@
+    <div id="tanda-stash" aria-hidden="true" style="display:none;">
+        @* Iteración y filtrado de tandas activas que poseen stock disponible. *@
+        @foreach (var tanda in tandas)
+        {
+            var productosEnTanda = tanda.Productos?
+                .Where(tp => tp.Disponible)
+                .ToList() ?? new List<Drippin.Models.Producto>();
+
+            @* Verificación de viabilidad del banner basada en la disponibilidad de productos asociados. *@
+            @if (productosEnTanda.Any())
+            {
+                <div class="tanda-banner" data-tanda-id="@tanda.TandaId">
+
+                    <div class="tanda-header">
+                        <div class="tanda-info">
+                            <span class="tanda-label">Nueva Colección</span>
+                            <h2 class="tanda-nombre">@tanda.TanNombre</h2>
                         </div>
-                        }
-
+                        <a href="#tanda-@tanda.TandaId" class="btn-ver-coleccion">
+                            Ver Colección <span class="arrow-icon">→</span>
+                        </a>
                     </div>
 
-                    <!-- Controles de navegación -->
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-pagination"></div>
-                </div>
-
-                <!-- Información del producto (fuera del contenedor swiper) -->
-                <div class="info-producto">
-            
-                    <h5 class="titulo-producto">@Model.proNombre.ToUpper()</h5>
-            
-                    <div class="precio">$@Model.proPrecio.ToString("N2")</div>
-            
-                    <div class="descripcion">
-                
-                        <div class="descripcion-destacado">
-                            <p>Destacado</p> 
-                        </div>
-
-                        <div class="descripcion-texto">
-                            @if (!string.IsNullOrEmpty(Model.proDescripcion))
+                    <div class="swiper swiper-tanda-@tanda.TandaId" id="tanda-@tanda.TandaId">
+                        <div class="swiper-wrapper">
+                            @* Renderización de los ítems constitutivos del carrusel de la tanda actual. *@
+                            @foreach (var tp in productosEnTanda)
                             {
-                                <p>
-                                    @Model.proDescripcion
-                                </p>
+                                <div class="swiper-slide" style="width:auto;">
+                                    <a asp-controller="Productos" asp-action="Details" asp-route-id="@tp.proId" class="tanda-slide-card">
+                                        <img src="@Url.Content(ImageHelper.FormatearRuta(tp.proImagen))"
+                                             alt="@tp.proNombre"
+                                             class="tanda-slide-img" />
+                                        <div class="tanda-slide-info">
+                                            <p class="tanda-slide-nombre">@tp.proNombre</p>
+                                            <p class="tanda-slide-precio">$@tp.proPrecio.ToString("N2")</p>
+                                        </div>
+                                    </a>
+                                </div>
                             }
                         </div>
-
-                        <div class="descripcion-medidas">
-                            @if (!string.IsNullOrEmpty(Model.proMedidas))
-                            {
-                                <p>@Model.proMedidas</p>
-                            }
-                        </div>
-
                     </div>
 
-                    <!-- Botón de contacto (modificado para contacto) -->
-                    <a asp-controller="Productos" asp-action="Details" asp-route-id="@Model.proId" class="boton-contacto">
-                        Consultar disponibilidad
-                    </a>
+                    <div class="tanda-swiper-nav">
+                        <button class="tanda-nav-btn tanda-prev-@tanda.TandaId" aria-label="Anterior">&#8592;</button>
+                        <button class="tanda-nav-btn tanda-next-@tanda.TandaId" aria-label="Siguiente">&#8594;</button>
+                    </div>
 
                 </div>
-
-            </div>
-
+            }
         }
-        else
-        {
-              /* Si no hay producto destacado, muestra los productos normales directamente*/
-            
-        }
+    </div>
 
-            <!-- /* ///////////////////// */ -->
+</div>
 
-            <!-- /* BARRA DE FILTROS */-->
-
-            <div class="barra-filtros">
-                <button class="boton-filtro" onclick="toggleMenu()">Filtrar ▼</button>
-                <div id="menu-filtros" class="menu-filtros oculto">
-                    <ul>
-                        <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="precio_asc">Precio ascendente</a></li>
-                        <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="precio_desc">Precio descendente</a></li>
-                        <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="nombre_asc">Nombre A-Z</a></li>
-                        <li><a asp-controller="Home" asp-action="Index" asp-route-sortBy="nombre_desc">Nombre Z-A</a></li>
-                        <li><a asp-controller="Home" asp-action="Index">Reestablecer Orden</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- /* ///////////////////// */ -->
-
-            <!-- PRODUCTOS NORMALES EN CARDS -->
-            <section class="contenedor-productos">
-                @foreach (var p in productos)
-                {
-
-                        <div class="card-producto">
-                            <a asp-controller="Productos" asp-action="Details" asp-route-id="@p.proId" class="card-producto-link">
-                                <div class="imagen-card">
-                                    <img src="@Url.Content(!string.IsNullOrEmpty(p.proImagen) ? p.proImagen : "~/images/ejemplo1.jpg")" alt="Imagen de @p.proNombre" />
-                                </div>
-
-                                <div class="contenido-card">
-                                    <h5 class="titulo">@p.proNombre</h5>
-                                    <p class="precio">$@p.proPrecio.ToString("N2")</p>
-                            
-                                </div>
-                            </a>
-
-                        </div>
-                }
-            </section>
-
-
-        
-
-    <!-- SWIPER JS SCRIPT -->
-
-    <script>
-
-                const swiper = new Swiper('.swiper-destacado', {
-          // Optional parameters
-          direction: 'horizontal',
-          slidesPerView: 1,
-          spaceBetween: 10,
-          autoplay: {
-            delay: 3000, // milisegundos entre cada slide (3000ms = 3 segundos)
-            disableOnInteraction: false // el autoplay continúa aunque el usuario interactúe
-            },
-          loop: true,
-
-          // If we need pagination
-          pagination: {
-            el: '.swiper-pagination',
-          },
-
-          // Navigation arrows
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-
-          // And if we need scrollbar
-          scrollbar: {
-            el: '.swiper-scrollbar',
-          },
-
-          breakpoints: {
-              768: {
-                  slidesPerView: 2,
-                  spaceBetween: 10,
-              },
-
-
-          },
-                    
-        });
-
-    </script>
-
-    <!-- MENU DE FILTROS -->
-
-    <script>
-
-        function toggleMenu() {
-            var menu = document.getElementById("menu-filtros");
-            menu.classList.toggle("oculto");
-        }
-
-    </script>
-
-    <!--////////////////////////////////////////////////////-->
-
-
-
-</body>
+@section Scripts {
+    @* Inyección de librerías y lógica de cliente para la interactividad de la página de inicio. *@
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="~/js/home.js" asp-append-version="true"></script>
+}

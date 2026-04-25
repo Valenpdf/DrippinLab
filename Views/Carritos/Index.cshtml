@@ -1,22 +1,19 @@
-﻿@model List<Drippin.DTO.CarritoItemDTO>
+@model List<Drippin.DTO.CarritoItemDTO>
+@* Vista retornada por: CarritosController.Index *@
 @{
     ViewData["Title"] = "Carrito de Compras";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Ajusta si tu Layout está en otro lugar
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-
 @{
-    // Generar un número de orden aleatorio simple (4 dígitos)
+    @* Generación de un identificador de orden aleatorio para propósitos de referencia en el ticket. *@
     Random random = new Random();
     string orderNumber = random.Next(1000, 9999).ToString("D4");
 
-    // Placeholder para el nombre del usuario
+    @* Extracción y composición del nombre completo del usuario autenticado desde los claims de identidad. *@
     string nombre = User.Identity.Name;
     string apellido = User.FindFirst("UsApellidoClaim")?.Value ?? string.Empty;
     string userName = $"{nombre} {apellido}";
-
 }
 
 <style>
@@ -31,18 +28,17 @@
     btn-eliminar {
         color: white;
     }
-
 </style>
 
 <link rel="stylesheet" href="~/css/site.css" />
 <link rel="stylesheet" href="~/css/carrito-style.css" />
-
 
 <div class="container my-5">
     <div class="contenedor-carrito">
         
         <h2 class="titulo-carrito mb-4 text-center">@ViewData["Title"]</h2>
 
+        @* Renderización de notificaciones de información persistidas en TempData. *@
         @if (TempData["Alerta"] != null)
         {
                 <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -51,6 +47,7 @@
                 </div>
         }
 
+        @* Validación de existencia de elementos en el modelo del carrito de compras. *@
         @if (Model == null || !Model.Any())
         {
                 <div class="alert alert-warning text-center p-4">
@@ -64,6 +61,7 @@
         }
         else
         {
+            @* Visualización tabular de los ítems contenidos en el carrito de compras. *@
             <div class="carrito-lista">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
@@ -82,8 +80,8 @@
                                     <td>
                                         <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.proId" class="text-decoration-none producto-link">
                                             <div class="d-flex align-items-center" id="img-producto">
-                                                @* Miniatura de la imagen *@
-                                                <img src="@Url.Content(item.ProImagen)" alt="@item.ProNombre" style="width: 40px; height: 40px; object-fit: cover;" class="me-3 border rounded" />
+                                                @* Resolución y renderización de la miniatura del producto mediante ImageHelper. *@
+                                                <img src="@Url.Content(ImageHelper.FormatearRuta(item.ProImagen))" alt="@item.ProNombre" style="width: 40px; height: 40px; object-fit: cover;" class="me-3 border rounded" />
                                                 <span class="fw-bold">@item.ProNombre</span>
                                             </div>
                                         </a>
@@ -92,7 +90,7 @@
                                     <td class="text-center">@item.Subtotal.ToString("C")</td>
                                     <td class="text-center">@item.Cantidad.ToString("")</td>
                                     <td>
-                                        @* Formulario para eliminar el producto *@
+                                        @* Acción para la eliminación de un ítem específico del carrito de compras. *@
                                         <form asp-controller="Carritos" asp-action="RemoverDelCarrito" method="post">
                                             <input type="hidden" name="proId" value="@item.proId" />
                                                     <button type="submit" class="btn-eliminar btn btn-sm btn-outline-danger" title="Eliminar Producto">
@@ -106,10 +104,11 @@
                 </table>
             </div>
 
-                
-            <div class="resumen-container" id="ticket-para-descargar">
+            @* Representación visual del ticket de compra para descarga y validación externa. *@
+            <div class="ticket-and-text-wrapper">
+                <div class="resumen-container" id="ticket-para-descargar">
 
-                <!-- CABECERA ESTILO TICKET -->
+                @* Cabecera estilizada del comprobante de orden. *@
                 <div class="text-center mb-4">
                     <h1 class="drippin-title">DRIPPIN</h1>
                     <p class="receipt-info">
@@ -118,44 +117,40 @@
                     </p>
                 </div>
 
-                <!-- ENCABEZADOS DE COLUMNA Y DIVISOR SUPERIOR -->
+                @* Definición de columnas y divisores estructurales del ticket. *@
                 <hr class="receipt-divider" />
                 <div class="d-flex justify-content-between receipt-header-row">
-                    <!-- COLUMNA 1: IMG (antes QTY) -->
                     <span class="col-img">IMG</span>
-                    <!-- COLUMNA 2: ITEM (Nombre del Producto) -->
                     <span class="col-item-name flex-grow-1">ITEM</span>
-                    <!-- COLUMNA 3: PRECIO (antes AMT) -->
                     <span class="col-price text-end">PRECIO</span>
                 </div>
                 <hr class="receipt-divider" />
 
-                <!-- ITEMS DEL CARRITO -->
+                @* Iteración sobre el modelo para la renderización detallada de ítems en el ticket. *@
                 @foreach (var item in Model)
                 {
                     <div class="carrito-item d-flex align-items-center mb-3">
 
-                        <!-- IMG -->
                         <div class="carrito-img me-2">
-                                <img src="@Url.Content(item.ProImagen)" alt="@item.ProNombre" class="img-fluid" />
+                                <img src="@Url.Content(ImageHelper.FormatearRuta(item.ProImagen))" alt="@item.ProNombre" class="img-fluid" />
                         </div>
 
-                        <!-- DETALLE DEL ITEM -->
                         <div class="carrito-detalle flex-grow-1">
                             <span class="fw-bold d-block">@item.ProNombre</span>
                 
-                            @* Muestra la cantidad y el precio unitario si es más de 1 unidad *@
+                            @* Visualización condicional del desglose de cantidad y precio unitario. *@
                             @if (item.Cantidad > 1) {
                                 <small class="d-block">(@item.Cantidad x @item.ProPrecio.ToString("C"))</small>
                             }
                         </div>
 
-                        <!-- PRECIO (Muestra el Subtotal) -->
                         <div class="carrito-precio text-end">
                             <span>@item.Subtotal.ToString("C")</span>
                         </div>
 
-                        <!-- BOTÓN DE REMOVER -->
+                        @* 
+                           Contenedor de acciones excluido del proceso de captura de pantalla (html2canvas).
+                        *@
                     <div data-html2canvas-ignore="true">
                             <form asp-controller="Carritos" asp-action="RemoverDelCarrito" method="post">
                                 <input type="hidden" name="proId" value="@item.proId" />
@@ -167,10 +162,9 @@
                     </div>
 
                 }
-                    <!-- DIVISOR INFERIOR -->
                 <hr class="receipt-divider" />
     
-                <!-- TOTAL GENERAL -->
+                @* Presentación del monto total acumulado del carrito. *@
                 @if (ViewBag.TotalGeneral != null)
                 {
                         <div class="d-flex justify-content-between receipt-footer-row mt-3">
@@ -180,7 +174,21 @@
                 }
             </div>
 
-            <div class="d-grid gap-2 mt-4">        
+                <div class="ticket-instructions">
+                    <p>
+                        Descargá la imagen del ticket y mandala a nuestro instagram 
+                        <a href="https://www.instagram.com/drippin.lab/" target="_blank" rel="noopener noreferrer"><strong>@@drippin.lab</strong></a> 
+                        para completar la compra
+                    </p>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4"> 
+                
+                <a asp-controller="Home" asp-action="Index" class="btn btn-dark">
+                    <i class="fa-solid fa-store me-1"></i> Seguir comprando
+                </a>
+
                 <button id="btn-descargar-ticket" type="button" class="btn btn-outline-light">
                     <i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen
                 </button>
@@ -189,67 +197,60 @@
     </div>
 </div>
 
-
-
 @section Scripts {
+    @* Inyección de recursos para la validación asíncrona de formularios. *@
     @{
-        // Esto carga los scripts de validación de ASP.NET
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    @* 1. Importa la librería html2canvas (Este comentario Razor está bien aquí) *@
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    @* Integración de la librería externa html2canvas para la exportación de elementos DOM a recursos visuales. *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-            <script>
-            document.addEventListener("DOMContentLoaded", function() {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        
+            const botonDescarga = document.getElementById("btn-descargar-ticket");
+            const ticketElement = document.getElementById("ticket-para-descargar");
+
+            @* Validación de existencia de los nodos necesarios para la funcionalidad de descarga. *@
+            if (!botonDescarga || !ticketElement) {
+                console.error("No se pudo encontrar el botón de descarga o el elemento del ticket.");
+                return;
+            }
+
+            botonDescarga.addEventListener("click", function() {
             
-                const botonDescarga = document.getElementById("btn-descargar-ticket");
-                const ticketElement = document.getElementById("ticket-para-descargar");
+                @* Gestión del estado visual del control de acción durante el proceso de generación. *@
+                botonDescarga.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Generando...';
+                botonDescarga.disabled = true;
 
-                // Verificación (buena práctica)
-                if (!botonDescarga || !ticketElement) {
-                    console.error("No se pudo encontrar el botón de descarga o el elemento del ticket.");
-                    return;
-                }
-
-                botonDescarga.addEventListener("click", function() {
+                @* Ejecución de la captura de pantalla del elemento ticket con parámetros de resolución y seguridad (CORS). *@
+                html2canvas(ticketElement, {
+                    backgroundColor: '#000000',
+                    scale: 2,
+                    useCORS: true 
+                }).then(canvas => {
                 
-                    botonDescarga.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Generando...';
-                    botonDescarga.disabled = true;
+                    @* Creación de un elemento de anclaje temporal para la gestión de la descarga del recurso generado. *@
+                    const link = document.createElement("a");
+                    link.href = canvas.toDataURL("image/png");
+                    link.download = "ticket-drippin-@(orderNumber).png";
+                    link.click();
 
-                    html2canvas(ticketElement, {
-                        backgroundColor: '#000000',
-                        scale: 2,
-                        useCORS: true // ✅ AÑADIDO: Intenta cargar imágenes con CORS
-                    }).then(canvas => {
-                    
-                        /* Crea un enlace temporal <a> para descargar */
-                        const link = document.createElement("a");
-                    
-                        /* Obtiene los datos de la imagen del canvas en formato PNG */
-                        link.href = canvas.toDataURL("image/png");
-                    
-                        /* Define el nombre del archivo (con sintaxis Razor corregida) */
-                        link.download = "ticket-drippin-@(orderNumber).png";
-                    
-                        /* Simula un clic en el enlace para iniciar la descarga */
-                        link.click();
+                    @* Restauración del estado original del control tras la finalización exitosa. *@
+                    botonDescarga.innerHTML = '<i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen';
+                    botonDescarga.disabled = false;
 
-                        /* Restaura el botón (en éxito) */
-                        botonDescarga.innerHTML = '<i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen';
-                        botonDescarga.disabled = false;
+                }).catch(error => {
+                
+                    @* Gestión de excepciones durante el proceso de exportación y feedback al usuario. *@
+                    console.error("Error al generar el ticket con html2canvas:", error);
+                    alert("Error al generar la imagen. Es posible que haya un problema con las imágenes del producto (CORS). Revisa la consola (F12).");
 
-                    }).catch(error => {
-                    
-                        // ✅ AÑADIDO: Manejo de errores
-                        console.error("Error al generar el ticket con html2canvas:", error);
-                        alert("Error al generar la imagen. Es posible que haya un problema con las imágenes del producto (CORS). Revisa la consola (F12).");
-
-                        /* Restaura el botón (en error) */
-                        botonDescarga.innerHTML = '<i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen';
-                        botonDescarga.disabled = false;
-                    });
+                    botonDescarga.innerHTML = '<i class="fa-solid fa-download me-1"></i> Descargar Ticket como Imagen';
+                    botonDescarga.disabled = false;
                 });
             });
-        </script>
+        });
+    </script>
 }

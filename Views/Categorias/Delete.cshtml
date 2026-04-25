@@ -1,11 +1,11 @@
-﻿@model Drippin.Models.Categoria
+@model Drippin.Models.Categoria
+@* Vista retornada por: CategoriasController.Delete *@
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Categoría";
 }
 
 <style>
-
     th {
         color: white;
     }
@@ -21,14 +21,13 @@
     div {
         color: white;
     }
-
 </style>
 
-<h1>Delete</h1>
+<h1>Eliminar Categoría</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Está seguro de que desea eliminar este registro?</h3>
 <div>
-    <h4>Categoria</h4>
+    <h4>Detalles de la Categoría</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -40,8 +39,10 @@
     </dl>
     
     <form asp-action="Delete">
+        @* Persistencia del identificador único para la ejecución de la eliminación en el servidor. *@
         <input type="hidden" asp-for="CategoriaId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        
+        <input type="submit" value="Confirmar Eliminación" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
     </form>
 </div>

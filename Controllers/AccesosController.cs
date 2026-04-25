@@ -1,4 +1,4 @@
-﻿using BCrypt.Net;
+using BCrypt.Net;
 using Drippin.Data;
 using Drippin.DTO;
 using Drippin.Models;
@@ -17,25 +17,43 @@ using System.Threading.Tasks;
 
 namespace Drippin.Controllers
 {
-    /* Este controlador maneja la seguridad e identidad de los usuarios, gestionando el login, registro,
-     * logout y el flujo de recuperación de contraseña. */
+    /// <summary>
+    /// Gestiona la seguridad e identidad de los usuarios, incluyendo procesos de autenticación,
+    /// registro de nuevos clientes y flujos de recuperación de credenciales.
+    /// Retorna vistas en: <see cref="Views.Accesos"/>
+    /// Utiliza: <see cref="LoginViewModel"/>, <see cref="RecoveryViewModel"/>, <see cref="RecoveryPasswordViewModel"/>, <see cref="Usuario"/> y <see cref="DTO.UsuariosDTO"/>.
+    /// </summary>
     public class AccesosController : Controller
     {
-        private readonly DrippinContext _context; /* Para consultar y guardar usuarios en la BD */
-        private readonly IEmailService _emailService; /* Para enviar los correos de recuperación de contraseña. */
+        /// <summary>
+        /// Contexto de acceso a datos para la persistencia de usuarios.
+        /// </summary>
+        private readonly DrippinContext _context;
 
+        /// <summary>
+        /// Servicio para el envío de notificaciones por correo electrónico.
+        /// </summary>
+        private readonly IEmailService _emailService;
+
+        /// <summary>
+        /// Inicializa una nueva instancia de <see cref="AccesosController"/>.
+        /// </summary>
         public AccesosController(DrippinContext context, IEmailService emailService)
         {
             _context = context;
             _emailService = emailService;
         }
 
-        // ------------------------- LOGIN ------------------------- //
+        #region Login y Logout
+
+        /// <summary>
+        /// Presenta el formulario de inicio de sesión.
+        /// Retorna: <see cref="Views.Accesos.Login"/>
+        /// </summary>
         [HttpGet]
-        public IActionResult Login() /* Muestra el formulario de Logueo. */
+        public IActionResult Login()
         {
-            /* Si el usuario ya está autenticado, lo redirije al Inicio 
-            *  para evitar que un usuario logueado vea el login. */
+            // Redirige al inicio si el usuario ya cuenta con una sesión activa.
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Inicio");
@@ -43,53 +61,55 @@ namespace Drippin.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Procesa las credenciales de acceso y establece la identidad del usuario mediante cookies.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid) /* Si el formulario no se valida, vuelve al login. */
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // Busca el usuario por correo, incluyendo su Rol para las Claims
+            // Recupera la entidad de usuario incluyendo su rol asociado.
             var usuario = await _context.Usuario
                                          .Include(u => u.Role)
                                          .FirstOrDefaultAsync(u => u.UsCorreo == model.UsCorreo);
 
-            /* Verifica si el usuario existe y si la contraseña coincide, usando el método VerifyPassword del servicio Encrypt
-             * de encriptación */
+            // Valida la existencia del usuario y la integridad de la contraseña.
             if (usuario == null || !Encrypt.VerifyPassword(model.Password, usuario.PasswordHash))
             {
                 ModelState.AddModelError(string.Empty, "Credenciales incorrectas o usuario no registrado.");
                 return View(model);
             }
 
-            // Si el usuario existe y la contraseña coincide, crea las Claims (Identidad)
+            // Define las declaraciones (claims) de identidad para el principal de seguridad.
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()), // ID único (ASP.Net Identity)
-                new Claim(ClaimTypes.Name, usuario.UsNombre), // Nombre para mostrar
-                new Claim("UsApellidoClaim", usuario.UsApellido), // Apellido del usuario
-                new Claim("UsCorreoClaim", usuario.UsCorreo), // Correo
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
+                new Claim(ClaimTypes.Name, usuario.UsNombre),
+                new Claim("UsApellidoClaim", usuario.UsApellido),
+                new Claim("UsCorreoClaim", usuario.UsCorreo),
                 new Claim(ClaimTypes.Email, usuario.UsCorreo), 
-                new Claim(ClaimTypes.Role, usuario.Role.NombreRol) // CRUCIAL para [Authorize(Roles = "")]
+                new Claim(ClaimTypes.Role, usuario.Role.NombreRol)
             };
 
-            /* Se crea la variable que contiene las Claims del usuario y las cookies */
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Propiedades de Autenticación (manejo de 'Recordarme')
+            // Configura las propiedades de la sesión, considerando la persistencia solicitada.
             var authProperties = new AuthenticationProperties
             {
-                /* Acá indica que las cookies de sesion se manejan desde "Recordarme" */
-                IsPersistent = model.Recordarme, 
-
-                /* Si Recordarme es true, la cookie de sesion dura 7 dias, sino, dura 30 minutos */
-                ExpiresUtc = model.Recordarme ? DateTimeOffset.UtcNow.AddDays(7) : DateTimeOffset.UtcNow.AddMinutes(30)
+                IsPersistent = model.Recordarme
             };
 
-            // Inicia la sesión la sesión del usuario, crea la Cookie y redirigiendo al inicio)
+            if (model.Recordarme)
+            {
+                authProperties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7);
+            }
+
+            // Realiza el proceso de SignIn en el contexto HTTP.
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -98,28 +118,33 @@ namespace Drippin.Controllers
             return RedirectToAction("Index", "Inicio");
         }
 
-        // 6. Cerrar Sesión del usuario (Logout)
+        /// <summary>
+        /// Finaliza la sesión del usuario actual y elimina la cookie de autenticación.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            /* Destruye la cookie de autenticacion */
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); 
-            
-            /* Redirige al Home publico */
             return RedirectToAction("Index", "Home");
         }
 
+        #endregion
 
-        // ------------------------- RECOVERY ------------------------- //
+        #region Recuperación de Contraseña
 
-        // GET: Muestra el formulario para ingresar el correo
+        /// <summary>
+        /// Presenta la vista para iniciar el proceso de recuperación de contraseña.
+        /// Retorna: <see cref="Views.Accesos.StartRecovery"/>
+        /// </summary>
         [HttpGet]
         public IActionResult StartRecovery()
         {
             return View();
         }
 
-        // Recibe el correo del usuario que olvidó su contraseña mediante el ViewModel de Recovery
+        /// <summary>
+        /// Inicia el flujo de recuperación generando un token de seguridad y enviando un enlace por correo.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StartRecovery(RecoveryViewModel model)
@@ -129,30 +154,23 @@ namespace Drippin.Controllers
                 return View(model);
             }
 
-            /* Busca al usuario por su correo */
             var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.UsCorreo == model.UsCorreo);
 
-            /* Da un mensaje genérico para no revelar si el correo existe (Asi se evita que un atacante use el formulario
-             * para adivinar qué correos están registrados en el sistema) */
+            // Se aplica una política de respuesta genérica para evitar la enumeración de usuarios.
             if (usuario != null)
             {
-                // Generar Token Único
+                // Generación de token único y establecimiento de ventana de expiración.
                 string token = Guid.NewGuid().ToString("N");
-
-                // Establece una expiración de 2 horas
                 DateTime expiracion = DateTime.Now.AddHours(2);
 
-                // Guarda el token en la BD, en el registro del usuario.
                 usuario.Token = token;
                 usuario.FechaExpiracionToken = expiracion;
                 await _context.SaveChangesAsync();
 
-                // Generar un enlace de recuperación completo 
+                // Construcción de la URL de recuperación y envío del correo electrónico.
                 var recoveryUrl = Url.Action("Recovery", "Accesos", new { Token = token }, Request.Scheme);
-
                 string subject = "Recuperación de Contraseña para Drippin";
 
-                // Crear un mensaje con formato HTML que incluye el enlace
                 string mensajeCorreo = $@"
                     <html>
                         <body>
@@ -164,28 +182,27 @@ namespace Drippin.Controllers
                         </body>
                     </html>";
 
-                // Llama al método SendEmailAsync para enviar el correo con el enlace HTML.
                 await _emailService.SendEmailAsync(usuario.UsCorreo, subject, mensajeCorreo);
-            
-
             }
 
             TempData["InfoMessage"] = "Si su correo está registrado, recibirá un enlace para reestablecer su contraseña.";
             return RedirectToAction("Login");
         }
 
-        /* Se activa cuando el usuario cliquea en el enlace del correo. */
+        /// <summary>
+        /// Valida el token de recuperación y presenta el formulario para establecer una nueva contraseña.
+        /// Retorna: <see cref="Views.Accesos.Recovery"/>
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Recovery(string Token)
         {
-            /* Si no existe un token, tira error. */
             if (string.IsNullOrEmpty(Token))
             {
                 TempData["Error"] = "Token no proporcionado.";
                 return RedirectToAction("Login");
             }
 
-            /* Verifica que el token exista y que no haya expirado. */
+            // Verifica la validez del token y su vigencia temporal.
             var usuario = await _context.Usuario
                 .FirstOrDefaultAsync(u => u.Token == Token && u.FechaExpiracionToken > DateTime.Now);
 
@@ -195,11 +212,12 @@ namespace Drippin.Controllers
                 return RedirectToAction("Login");
             }
 
-            /* Si el token es válido, muestra el formulario de nueva contraseña */
             return View(new RecoveryPasswordViewModel { Token = Token });
         }
 
-        /* Cambiar la contraseña */
+        /// <summary>
+        /// Procesa la actualización de la contraseña del usuario tras la validación del token.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Recovery(RecoveryPasswordViewModel model)
@@ -209,7 +227,6 @@ namespace Drippin.Controllers
                 return View(model);
             }
 
-            /* Re-validar el token usando la misma lógica de existencia + expiración. */
             var usuario = await _context.Usuario
                 .FirstOrDefaultAsync(u => u.Token == model.Token && u.FechaExpiracionToken > DateTime.Now);
 
@@ -219,43 +236,44 @@ namespace Drippin.Controllers
                 return RedirectToAction("Login");
             }
 
-            /* Si la re-validación falla, tira error, y sino:
-             * hashea y actualiza la nueva contraseña */
+            // Actualiza el hash de la contraseña e invalida el token utilizado.
             usuario.PasswordHash = Drippin.Service.Encrypt.HashPassword(model.NewPassword);
-
-            /* E invalida el token para que no se pueda volver a usar. */
-            usuario.Token = null;
+            usuario.Token = "tokenbloqueado";
             usuario.FechaExpiracionToken = null;
 
-            /* Guarda los cambios en la base de datos con la nueva contraseña y token vacío. */
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Contraseña reestablecida con éxito. Inicie sesión.";
-
-            /* Y redirige al Login. */
             return RedirectToAction("Login");
         }
 
+        #endregion
 
+        #region Registro
 
-        // -------------------- REGISTRO --------------------- //
-
+        /// <summary>
+        /// Presenta la vista de registro para nuevos clientes.
+        /// Retorna: <see cref="Views.Accesos.Registrarse"/>
+        /// </summary>
         [HttpGet]
-        public IActionResult Registrarse() /* Muestra el formulario de registro */
+        public IActionResult Registrarse()
         {
             return View();
         }
 
+        /// <summary>
+        /// Procesa el registro de un nuevo usuario con el rol predeterminado de cliente.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registrarse(UsuariosDTO model) /* Procesa el formulario de registro de un nuevo cliente. */
+        public async Task<IActionResult> Registrarse(UsuariosDTO model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // 1. Verifica si el correo ya existe, y si existe, muestra el mensaje de error
+            // Valida la unicidad del correo electrónico en el sistema.
             var usuarioExistente = await _context.Usuario.FirstOrDefaultAsync(u => u.UsCorreo == model.UsCorreo);
             if (usuarioExistente != null)
             {
@@ -263,40 +281,34 @@ namespace Drippin.Controllers
                 return View(model);
             }
 
-            /* Verifica si existe el rol con Id = 2 ('Cliente').  */
+            // Recupera la entidad de rol para 'Cliente'.
             var rolEntity = await _context.Role.FirstOrDefaultAsync(r => r.IdRol == 2); 
 
             if (rolEntity == null)
             {
-                /* Manejo de error si el rol por defecto no existe en la base de datos
-                 * (Aunque el rol ya se crea por si solo al crear la BD en el contexto.) */
                 ModelState.AddModelError("", "El rol por defecto ('Cliente') no se encuentra en el sistema. Contacte al administrador.");
                 return View(model);
-                
             }
 
-            // Hashea la contraseña insertada por el usuario en UsuariosDTO (usando BCrypt)
-            string passwordHash = Encrypt.HashPassword(model.Password);
-
-            // 3. Crear una instancia nueva del modelo Usuario y la llena con los datos del UsuariosDTO
+            // Crea la nueva entidad de usuario con los datos provistos y la contraseña hasheada.
             var nuevoUsuario = new Usuario
             {
                 UsNombre = model.UsNombre,
                 UsCorreo = model.UsCorreo,
                 UsApellido = model.UsApellido,
-                PasswordHash = passwordHash,
-                IdRol = rolEntity.IdRol, // rol de 'Cliente'
+                PasswordHash = Encrypt.HashPassword(model.Password),
+                IdRol = rolEntity.IdRol,
                 FechaRegistro = DateTime.Now
             };
 
-            // Lo guarda en la base de datos
             _context.Usuario.Add(nuevoUsuario);
             await _context.SaveChangesAsync();
 
-            // Redirige al Login
             TempData["SuccessMessage"] = "Registro exitoso. ¡Inicia sesión ahora!";
             return RedirectToAction("Login");
-
         }
+
+        #endregion
+        
     }
 }

@@ -1,32 +1,35 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Drippin.DTO; // Para UsuarioDTO
 using System.Security.Claims;
 
 namespace Drippin.Controllers
 {
+    /// <summary>
+    /// Gestiona el redireccionamiento inicial tras la autenticación y provee acceso a paneles
+    /// específicos según el rol del usuario, así como la gestión de accesos denegados.
+    /// Retorna vistas en: <see cref="Views.Inicio"/>
+    /// </summary>
     [Authorize]
     public class InicioController : Controller
     {
-        // ... Constructor e inyecciones ...
+        
 
+        /// <summary>
+        /// Extrae las declaraciones (claims) del usuario autenticado y redirige a la página principal.
+        /// </summary>
         [HttpGet]
         public IActionResult Index()
         {
-            // 1. EXTRAER CLAIMS (Manera estándar y recomendada de obtener datos)
-
-            // a. Datos estándar y extraídos directamente del ClaimTypes
+            // Recupera los identificadores y atributos de identidad del usuario actual a partir de sus declaraciones.
             var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var nombreClaim = User.FindFirst(ClaimTypes.Name)?.Value;
             var rolClaim = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            // b. Datos específicos definidos en el Login
             var apellidoClaim = User.FindFirst("UsApellidoClaim")?.Value;
             var correoClaim = User.FindFirst("UsCorreoClaim")?.Value;
 
-            // 2. USO DE VIEW BAG (Para pasar datos de forma simple a la vista)
-
-            // Pasando las Claims directamente a ViewBag
+            // Almacena los atributos de identidad en el contenedor ViewBag para su disponibilidad global en la vista.
             ViewBag.IdUsuario = idClaim;
             ViewBag.UsNombre = nombreClaim;
             ViewBag.UsCorreo = correoClaim;
@@ -36,6 +39,10 @@ namespace Drippin.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// Provee acceso al panel administrativo, restringido exclusivamente a usuarios con rol de Administrador.
+        /// Retorna: <see cref="Views.Inicio.PanelAdmin"/>
+        /// </summary>
         [Authorize(Roles = "Administrador")]
         [HttpGet]
         public IActionResult PanelAdmin()
@@ -44,7 +51,10 @@ namespace Drippin.Controllers
             return View();
         }
 
-        // Solo accesible para usuarios cuya Claim de Role sea "Cliente"
+        /// <summary>
+        /// Presenta la vista de perfil para usuarios con rol de Cliente.
+        /// Retorna: <see cref="Views.Inicio.PerfilCliente"/>
+        /// </summary>
         [Authorize(Roles = "Cliente")]
         [HttpGet]
         public IActionResult PerfilCliente()
@@ -53,14 +63,15 @@ namespace Drippin.Controllers
             return View();
         }
 
-        // Vista de Acceso Denegado (403 Forbidden)
-        // El middleware de autenticación redirige aquí si un usuario logueado
-        // intenta acceder a una acción con un rol que no posee (ej: un Cliente a PanelAdmin).
+        /// <summary>
+        /// Gestiona la presentación de la vista de acceso denegado cuando un usuario carece de los permisos necesarios.
+        /// Retorna: <see cref="Views.Inicio.AccesoDenegado"/>
+        /// </summary>
         [HttpGet]
-        [AllowAnonymous] // Debe ser accesible por todos (incluso logueados)
+        [AllowAnonymous]
         public IActionResult AccesoDenegado()
         {
-            return View(); // Debes crear la vista Views/Inicio/AccesoDenegado.cshtml
+            return View();
         }
     }
 }

@@ -1,11 +1,25 @@
-﻿@{
+@* Vista retornada por: InicioController.AccesoDenegado *@
+@{
     ViewData["Title"] = "Acceso Denegado";
 }
 
+<style>
+    h2 {
+        color: white;
+    }
+
+    p {
+        color: red;
+    }
+</style>
+
+@* Interfaz de notificación para restricciones de autorización (HTTP 403). *@
 <div class="text-center mt-5">
     <h1 class="text-danger">403 Acceso Denegado</h1>
-    <h2>No tienes permiso para ver este recurso.</h2>
+    <h2>Restricción de Seguridad Detectada</h2>
     <hr />
-    <p>Por favor, revisa tus permisos o contacta al administrador del sistema.</p>
-    <a asp-controller="Inicio" asp-action="Index" class="btn btn-primary">Volver al Inicio</a>
+    <p>El perfil de usuario actual no posee los privilegios necesarios para acceder a este recurso.</p>
+    
+    @* Navegación de retorno al punto de entrada seguro del sistema. *@
+    <a asp-controller="Inicio" asp-action="Index" class="btn btn-primary">Volver al Panel Principal</a>
 </div>

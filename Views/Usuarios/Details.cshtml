@@ -1,13 +1,32 @@
-﻿@model Drippin.Models.Usuario
+@model Drippin.Models.Usuario
+@* Vista retornada por: UsuariosController.Details *@
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de Usuario";
 }
 
-<h1>Details</h1>
+<style>
+    th {
+        color: white;
+    }
 
-<div>
-    <h4>Usuario</h4>
+    td {
+        color: white;
+    }
+
+    h1 {
+        color: white;
+    }
+
+    div {
+        color: white;
+    }
+</style>
+
+<h1>Especificación de Usuario</h1>
+
+<div class="text-white">
+    <h4>Atributos del Perfil</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -17,16 +36,16 @@
             @Html.DisplayFor(model => model.UsNombre)
         </dd>
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UsApellido)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UsApellido)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.UsCorreo)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.UsCorreo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PasswordHash)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IdRol)
@@ -40,21 +59,25 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FechaRegistro)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Token)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Token)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaExpiracionToken)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaExpiracionToken)
-        </dd>
+        @if (!string.IsNullOrEmpty(Model.Token))
+        {
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Token)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Token)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.FechaExpiracionToken)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.FechaExpiracionToken)
+            </dd>
+        }
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdUsuario">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    @* Navegación a las funciones de edición o retorno al listado principal. *@
+    <a asp-action="Edit" asp-route-id="@Model?.IdUsuario" class="btn btn-primary">Editar Perfil</a> |
+    <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
 </div>

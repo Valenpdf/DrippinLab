@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@* Estructura base de navegación y diseño (Layout) del proyecto. *@
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Proyecto</title>
+    <title>@ViewData["Title"] - Drippin Lab</title>
+    
+    @* Vinculación de recursos de estilo fundamentales y librerías externas. *@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Drippin.styles.css" asp-append-version="true" />
@@ -11,60 +14,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" 
           integrity="sha512-SnH5r+zR7Z6o+7n7xN4o/Vw0/m5z8o7F1+Gz4v5N3j3p4R0eH6o7F9G2+6o3Q2q4g==" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    
 </head>
 <body>
 
-    
-
     <header>
+        @* Barra de navegación principal con soporte para scroll dinámico. *@
         <nav id="main-header" class="navbar navbar-expand-lg navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3"
              style="background-color: black">
 
             <div class="container-fluid d-flex align-items-center">
 
+                @* Control de activación para el menú lateral (Offcanvas) en dispositivos móviles. *@
                 <button class="navbar-toggler me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                @* Despliegue de accesos directos por categoría para resoluciones de escritorio. *@
                 <div class="d-none d-lg-flex align-items-center flex-row" id="categoria-iconos">
                     @if (ViewBag.Categorias != null)
                     {
-                            foreach (var categoria in ViewBag.Categorias)
+                            @foreach (var categoria in ViewBag.Categorias)
                             {
                                     <a class="nav-link p-2"
                                        asp-controller="Categorias"
                                        asp-action="Details"
                                        asp-route-id="@categoria.CategoriaId"
                                        title="@categoria.CatNombre">
-                                        @{
-                                                string imagePath = string.IsNullOrEmpty(categoria.CatICO)
-                                                        ? "/images/ejemplo1.jpg" // Usa una ruta absoluta si CatICO está vacío
-                                                        : categoria.CatICO.StartsWith("~") ? Url.Content(categoria.CatICO) : categoria.CatICO;
-                                        }
-                                        <img src="@imagePath" alt="Icono de @categoria.CatNombre" class="categoria-icono-header" />
+                                        <img src="@Url.Content(ImageHelper.FormatearRuta(categoria.CatICO))" alt="Icono de @categoria.CatNombre" class="categoria-icono-header" />
                                     </a>
                             }
                     }
                 </div>
 
+                @* Centro de identidad visual y navegación al inicio. *@
                 <div class="text-center mx-auto" id="titulo-container">
                     <a class="nav-link text-white" asp-controller="Home" asp-action="Index">
                         <img src="/images/drippintitle.png" alt="DRIPPIN" class="logo-header">
                     </a>
-                    
                 </div>
-
-                @* <div class="d-none d-sm-flex order-sm-1">
-                    <ul class="navbar-nav flex-row">
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" asp-controller="Productos" asp-action="Index">Productos</a>
-                        </li>
-                    </ul>
-                </div> *@
-
                  
+                @* Acceso persistente al recurso de carrito de compras. *@
                 <div class="d-flex order-3">
                     <ul class="navbar-nav flex-row">
                         <li class="nav-item me-3">
@@ -75,33 +64,26 @@
                     </ul>
                 </div>
 
-                
-
-
-                @* ---------------------------------------------------------------------- *@
-                @* DROPDOWN DE USUARIO INTELIGENTE (LOGIN / PERFIL) 
-                @* ---------------------------------------------------------------------- *@
-                <div class="ms-auto me-3"> @* ms-auto empuja esto a la derecha en la navbar *@
-    
+                @* 
+                   Sistema de gestión de identidad de usuario (Dropdown).
+                   Renderiza dinámicamente opciones basadas en el estado de autenticación y roles asignados.
+                *@
+                <div class="ms-auto me-3">
                     <div class="dropdown">
-        
-                        @* BOTÓN PRINCIPAL: Icono de Usuario *@
+                        @* Disparador del menú de usuario con icono de identidad. *@
                         <button class="btn btn-link text-white dropdown-toggle" 
                                 type="button" 
                                 id="userDropdown" 
                                 data-bs-toggle="dropdown" 
                                 aria-expanded="false"
                                 style="font-size: 1.5rem;">
-            
                             <i class="fa-solid fa-circle-user"></i> 
                         </button>
 
-                        @* MENÚ DESPLEGABLE CONDICIONAL ************************************* *@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-
                             @if (User.Identity.IsAuthenticated)
                             {
-                                    @*  Nombre de Usuario (Información) *@
+                                    @* Información de bienvenida y estado de sesión activa. *@
                                     <li>
                                         <span class="dropdown-item-text fw-bold text-primary">
                                             Hola, @User.Identity.Name!
@@ -109,7 +91,7 @@
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                 
-                                    @*  Panel de administrador *@
+                                    @* Acceso restringido al Panel de Administración basado en políticas de rol. *@
                                     @if (User.IsInRole("Administrador"))
                                     {
                                             <li>
@@ -120,7 +102,7 @@
                                             <li><hr class="dropdown-divider"></li>
                                     }
                 
-                                    @* Cerrar Sesión *@
+                                    @* Terminación de la sesión actual de usuario. *@
                                     <li>
                                         <form asp-controller="Accesos" asp-action="Logout" method="post">
                                             <button type="submit" class="dropdown-item text-danger">
@@ -130,36 +112,31 @@
                                         </form>
                                     </li>                  
                             }
-                            else // USUARIO NO AUTENTICADO
+                            else
                             {
-                                    @* 1. Iniciar Sesión (ENLACE CORRECTO) *@
+                                    @* Opciones de entrada para usuarios no autenticados. *@
                                     <li>
-                                       
                                         <a class="dropdown-item" asp-controller="Accesos" asp-action="Login">
                                             <i class="fa-solid fa-right-to-bracket me-2"></i> Iniciar Sesión
                                         </a>
                                     </li>
                 
-                                    @* 2. Registrarse *@
                                     <li>
                                         <a class="dropdown-item" asp-controller="Accesos" asp-action="Registrarse">
                                             <i class="fa-solid fa-user-plus me-2"></i> Registrarse
                                         </a>
                                     </li>
                             }
-
                         </ul>
                     </div>
                 </div>
-                @* ---------------------------------------------------------------------- *@
-
-                
-
-            
+            </div>
         </nav>
 
-        @*------------------- BOTÓN HAMBURGUESA CATEGORIAS -------------------*@
-
+        @* 
+           Menú lateral (Offcanvas) para la exploración de categorías. 
+           Optimizado para la navegación táctil en dispositivos móviles. 
+        *@
         <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Categorías</h5>
@@ -169,88 +146,50 @@
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     @if (ViewBag.Categorias != null)
                     {
-                        foreach (var categoria in ViewBag.Categorias)
+                        @foreach (var categoria in ViewBag.Categorias)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-controller="Categorias" asp-action="Details" asp-route-id="@categoria.CategoriaId">
-                                    
-                                  
                                     <div class="cat-img">
-
-                                        @{
-                                            string imagePath = string.IsNullOrEmpty(categoria.CatICO)
-                                            ? "~/images/ejemplo1.jpg"
-                                            : categoria.CatICO;
-
-                                            if (!imagePath.StartsWith("~") && !imagePath.StartsWith("/"))
-                                            {
-                                                imagePath = $"/{imagePath}";
-                                            }
-                                        }
-
-                                        <img src="@Url.Content(categoria.CatICO)" alt="Icono de @categoria.CatNombre" class="categoria-icono me-2" />
-
+                                        <img src="@Url.Content(ImageHelper.FormatearRuta(categoria.CatICO))" alt="Icono de @categoria.CatNombre" class="categoria-icono me-2" />
                                     </div>
-
-                                   
-                                   
                                     @categoria.CatNombre
                                 </a>
-                           
                             </li>
                         }
                     }
                 </ul>
             </div>
         </div>
-
-        @*------------------- ---------------------------- -------------------*@
-
     </header>
 
-   
-
+    @* Punto de inyección dinámico para el contenido específico de las vistas. *@
     <div class="contenido">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - ActividadModulo3 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
+    @* Carga de librerías de cliente fundamentales y scripts de aplicación. *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-
-
-    @* // APLICA CLASE QUE ACTIVA ESTILO EN: .header-small #main-header // *@ 
     <script>
+        @* 
+           Orquestación de la reducción visual del encabezado (Header Collapse). 
+           Modifica las clases del body para disparar transiciones de estilo al superar un umbral de scroll. 
+        *@
+        window.addEventListener("scroll", function () {
+            const body = document.body;
+            const html = document.documentElement;
+            const scrolled = window.scrollY || html.scrollTop || body.scrollTop;
 
-        window.addEventListener("scroll", function () {                             // Detecta cuando se hace scroll //
-            const body = document.body;                                             // document.body es todo lo que está dentro de <body>
-            const html = document.documentElement;                                  // document.documentElement es todo lo que está dentro de <html>
-            const scrolled = window.scrollY    ||                                   /* Cuantos pixeles se scrolleó */
-                             html.scrollTop    ||                                   /* Cuanto se desplazó <html> verticalmente */
-                             body.scrollTop;                                      /* Cuanto se desplazó <body> */
-
-
-            /* Si se scrolleó más de 50 pixeles... */
             if (scrolled > 42) {
-
-                // Agrega la clase 'header-small' al <body>
-                // Esto activa los estilos que achican el header y el título
-                document.body.classList.add("header-small");                        // header-small es un efecto que viene con javascript
-
+                document.body.classList.add("header-small");
             } else {
-
-                // Si se vuelve hacia arriba, se remueve la clase y el header vuelve a su tamaño original
                 document.body.classList.remove("header-small");
-
             }
         });
     </script>

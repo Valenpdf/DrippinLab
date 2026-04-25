@@ -1,35 +1,39 @@
-﻿@model IEnumerable<Drippin.Models.Role>
+@model IEnumerable<Drippin.Models.Role>
+@* Vista retornada por: RolesController.Index *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Roles";
 }
 
-<h1>Index</h1>
+<h1 class="text-white">Administración de Roles de Usuario</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Crear Nuevo Rol</a>
 </p>
-<table class="table">
+
+@* Grilla de visualización para la gestión administrativa de perfiles de seguridad. *@
+<table class="table text-white">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.NombreRol)
             </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreRol)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdRol">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdRol">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdRol">Delete</a>
-            </td>
-        </tr>
-}
+        @* Iteración sobre el conjunto de roles definidos en el sistema. *@
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreRol)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.IdRol" class="btn btn-sm btn-outline-info">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.IdRol" class="btn btn-sm btn-outline-light">Detalles</a> |
+                        <a asp-action="Delete" asp-route-id="@item.IdRol" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+        }
     </tbody>
 </table>

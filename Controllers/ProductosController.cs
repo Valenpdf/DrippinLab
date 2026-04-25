@@ -1,4 +1,4 @@
-﻿using Drippin.Data;
+using Drippin.Data;
 using Drippin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,167 +11,169 @@ using System.Threading.Tasks;
 
 namespace Drippin.Controllers
 {
+    /// <summary>
+    /// Gestiona las operaciones de administración de productos, incluyendo el filtrado,
+    /// creación, edición y eliminación, así como el procesamiento de recursos multimedia asociados.
+    /// Retorna vistas en: <see cref="Views.Productos"/>
+    /// Utiliza: <see cref="Producto"/>, <see cref="Categoria"/> y <see cref="Tanda"/>.
+    /// </summary>
     public class ProductosController : BaseController
     {
-        // Constructor: Recibe el DbContext y lo pasa a la clase base (BaseController).
+        /// <summary>
+        /// Inicializa una nueva instancia de <see cref="ProductosController"/>.
+        /// </summary>
+        /// <param name="context">Contexto de base de datos inyectado.</param>
         public ProductosController(DrippinContext context) : base(context)
         {
         }
 
-        // GET: Productos - Muestra la lista de productos (Panel de Admin).
+        /// <summary>
+        /// Presenta la grilla de administración de productos con capacidades de filtrado por nombre e identificador de categoría.
+        /// Retorna: <see cref="Views.Productos.Index"/>
+        /// </summary>
+        /// <param name="searchString">Término de búsqueda para el nombre del producto.</param>
+        /// <param name="categoriaId">Identificador único de la categoría para el filtrado.</param>
         public async Task<IActionResult> Index(string searchString, int? categoriaId)
         {
-            // Obtiene la consulta inicial, incluyendo la navegación a Categoría
-            // Inicia la consulta (IQueryable) incluyendo la Categoría. Aún no se ejecuta.
+            // Prepara la consulta base integrando la relación de categoría.
             IQueryable<Drippin.Models.Producto> productos = _context.Producto.Include(p => p.Categoria);
 
-            // Aplicar filtro de búsqueda por nombre (si se proveyó).
+            // Aplica filtros dinámicos según los parámetros de búsqueda y categoría provistos.
             if (!String.IsNullOrEmpty(searchString))
             {
-                // Guarda el filtro actual para rellenar la caja de búsqueda en la vista.
                 ViewData["CurrentFilter"] = searchString;
-
-                // Añade la condición 'Where' a la consulta IQueryable.
                 productos = productos.Where(p => p.proNombre.Contains(searchString));
             }
 
-            // FILTRO: Aplicar filtro por categoría (si se seleccionó una).
             if (categoriaId.HasValue)
             {
-                // Guarda el ID de categoría para mantener la selección en el dropdown de la vista.
                 ViewData["CurrentCategoriaId"] = categoriaId.Value;
-
-                // Añade la condición 'Where' por CategoriaId a la consulta IQueryable.
                 productos = productos.Where(p => p.CategoriaId == categoriaId.Value);
             }
 
-            // Prepara el SelectList(dropdown) de categorías para el filtro de la vista.
+            // Provee los metadatos necesarios para los controles de selección en la vista.
             ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CatNombre", categoriaId);
 
-            // EJECUTA la consulta contra la BD (con todos los filtros) y pasa la lista a la vista.
-               return View(await productos.ToListAsync());
+            return View(await productos.ToListAsync());
         }
 
-        // GET: Productos/Details/5 - Muestra los detalles de un producto.
+        /// <summary>
+        /// Resuelve y presenta los detalles completos de un producto específico.
+        /// Retorna: <see cref="Views.Productos.Details"/>
+        /// </summary>
+        /// <param name="id">Identificador único del producto.</param>
         public async Task<IActionResult> Details(int? id)
         {
-            // Si no se provee un ID, retorna 'No Encontrado'.
             if (id == null)
             {
                 return NotFound();
             }
 
-            // Busca el producto por ID en la BD, incluyendo su Categoría.
             var producto = await _context.Producto
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(m => m.proId == id);
 
-            // Si el producto no existe en la BD, retorna 'No Encontrado'.
             if (producto == null)
             {
                 return NotFound();
             }
 
-            // Muestra la vista de Detalles con el producto encontrado.
             return View(producto);
         }
 
-        // GET: Productos/Create - Muestra el formulario para crear un producto.
+        /// <summary>
+        /// Presenta la vista con el formulario para la creación de un nuevo producto.
+        /// Retorna: <see cref="Views.Productos.Create"/>
+        /// </summary>
         public IActionResult Create()
         {
-            // Prepara el dropdown de categorías para el formulario.
             ViewBag.CategoriaId = new SelectList(_context.Categoria, "CategoriaId", "CatNombre");
             return View();
         }
 
-        // POST: Productos/Create - Procesa el envío del formulario de creación.
+        /// <summary>
+        /// Procesa la creación de un nuevo producto, gestionando la validación de datos y el almacenamiento de recursos visuales.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            // Recibe el modelo 'Producto' (con los campos del form) y los archivos de imagen (IFormFile).
             [Bind("proId,proNombre,proPrecio,CategoriaId,proImagen,proImagen2,proImagen3,proImagen4,Disponible,EsDestacado")] Producto producto,
-            IFormFile imagenSubida, // Imagen principal (obligatoria)
-            IFormFile imagenSecundaria2, // <--- Nueva imagen 2
-            IFormFile imagenSecundaria3, // <--- Nueva imagen 3
-            IFormFile imagenSecundaria4) // <--- Nueva imagen 4
+            IFormFile imagenSubida,
+            IFormFile imagenSecundaria2,
+            IFormFile imagenSecundaria3,
+            IFormFile imagenSecundaria4)
         {
-
-            // ---  Limpieza Completa de ModelState ---
-            // Limpia los errores de todas las propiedades que se manejan manualmente
-            // o que son propiedades de navegación que el formulario no envía.
-
-            // Quita los errores de las propiedades 'proImagenX' (string)...
+            // Remueve el estado de validación para las propiedades procesadas manualmente mediante flujo de archivos.
             if (ModelState.ContainsKey("proImagen")) { ModelState.Remove("proImagen"); }
-
-            // ...y de los parámetros IFormFile opcionales, ya que se manejan manualmente.
             if (ModelState.ContainsKey("imagenSecundaria2")) { ModelState.Remove("imagenSecundaria2"); }
             if (ModelState.ContainsKey("imagenSecundaria3")) { ModelState.Remove("imagenSecundaria3"); }
             if (ModelState.ContainsKey("imagenSecundaria4")) { ModelState.Remove("imagenSecundaria4"); }
 
-            // Validación Manual: Verifica si se subió la imagen principal.
+            // Valida la obligatoriedad del recurso visual principal.
             if (imagenSubida == null || imagenSubida.Length == 0)
             {
                 ModelState.AddModelError("imagenSubida", "La imagen principal es obligatoria para la creación del producto.");
             }
 
-            // Si el modelo (y la validación manual) es válido...
+            // Valida la unicidad del nombre del producto.
+            if (producto.proNombre != null)
+            {
+                var nombreNormalizado = producto.proNombre.Trim().ToUpper();
+                bool yaExiste = await _context.Producto
+                                    .AnyAsync(p => p.proNombre.Trim().ToUpper() == nombreNormalizado);
+
+                if (yaExiste)
+                {
+                    ModelState.AddModelError("proNombre", "Ya existe un producto con este nombre.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                // Llama al método 'GuardarImagen' para procesar y guardar los archivos.
+                // Almacena físicamente los archivos y persiste las rutas relativas en la base de datos.
                 producto.proImagen = await GuardarImagen(imagenSubida);
-
-                // 'GuardarImagen' devuelve 'null' si el archivo es nulo (opcionales).
                 producto.proImagen2 = await GuardarImagen(imagenSecundaria2);
                 producto.proImagen3 = await GuardarImagen(imagenSecundaria3);
                 producto.proImagen4 = await GuardarImagen(imagenSecundaria4);
-                // -----------------------------------------------------
 
-                // Agrega el nuevo producto al DbContext.
                 _context.Add(producto);
-                // Guarda los cambios en la BD.
                 await _context.SaveChangesAsync();
-                // Redirige a la lista de productos (Index).
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si la validación falla, recarga el dropdown de categorías y muestra el formulario de nuevo.
             ViewBag.CategoriaId = new SelectList(_context.Categoria, "CategoriaId", "CatNombre", producto.CategoriaId);
             return View(producto);
         }
 
-        // GET: Productos/Edit/5 - Muestra el formulario para editar un producto.
+        /// <summary>
+        /// Presenta el formulario para la edición de un producto existente, permitiendo la gestión de tandas y categorías.
+        /// Retorna: <see cref="Views.Productos.Edit"/>
+        /// </summary>
+        /// <param name="id">Identificador único del producto.</param>
         public async Task<IActionResult> Edit(int? id)
         {
-            // Busca el producto por ID (FindAsync es óptimo para buscar por Key).
             var producto = await _context.Producto.FindAsync(id);
-
-            // (Opcional) Pasa un 'Action' a la vista, útil si se reutiliza el formulario de Create.
             ViewData["Action"] = "Edit";
 
-            // Valida si se pasó un ID.
-            if (id == null)
+            if (id == null || producto == null)
             {
                 return NotFound();
             }
 
-            // Valida si el producto con ese ID existe.
-            if (producto == null)
-            {
-                return NotFound();
-            }
-
-            // Carga el dropdown de categorías, pre-seleccionando la categoría actual del producto.
             ViewBag.CategoriaId = new SelectList(_context.Categoria, "CategoriaId", "CatNombre", producto.CategoriaId);
+            ViewBag.TandaId = new SelectList(_context.Tanda, "TandaId", "TanNombre", producto.proTandaId);
+
             return View(producto);
         }
 
-        // POST: Productos/Edit/5 - Procesa el envío del formulario de edición.
+        /// <summary>
+        /// Procesa la actualización de un producto existente, incluyendo la sustitución o eliminación selectiva de recursos visuales.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            // Recibe el modelo 'Producto', los *nuevos* archivos IFormFile y los *checkboxes* 'eliminarImagen'.
-            [Bind("EsDestacado, proId,proNombre,proPrecio,CategoriaId,proImagen,proImagen2,proImagen3,proImagen4,Disponible")] Producto producto,
-            IFormFile imagenSubida, // Principal
+            [Bind("EsDestacado, proId,proNombre,proPrecio,CategoriaId,proImagen,proImagen2,proImagen3,proImagen4,Disponible,proTandaId")] Producto producto,
+            IFormFile imagenSubida,
             IFormFile imagenSecundaria2,
             IFormFile imagenSecundaria3,
             IFormFile imagenSecundaria4,
@@ -180,132 +182,90 @@ namespace Drippin.Controllers
             bool eliminarImagen3 = false,
             bool eliminarImagen4 = false)
         {
-            // Validación de seguridad: el ID de la ruta debe coincidir con el ID del modelo.
             if (id != producto.proId)
             {
                 return NotFound();
             }
 
-            // Obtiene los valores *originales* del producto desde la BD (sin rastreo).
+            // Recupera el estado original del registro para la gestión de recursos sin seguimiento de cambios.
             var productoActual = await _context.Producto.AsNoTracking().FirstOrDefaultAsync(p => p.proId == id);
             if (productoActual == null)
             {
                 return NotFound();
             }
 
-            // ---  Limpieza Completa de ModelState ---
-            // Quita errores de propiedades de imagen (string y IFormFile) para manejo manual.
-            
+            // Limpia el estado de validación para las propiedades de multimedia.
             if (ModelState.ContainsKey("proImagen")) { ModelState.Remove("proImagen"); }
             if (ModelState.ContainsKey("imagenSubida")) { ModelState.Remove("imagenSubida"); }
             if (ModelState.ContainsKey("imagenSecundaria2")) { ModelState.Remove("imagenSecundaria2"); }
             if (ModelState.ContainsKey("imagenSecundaria3")) { ModelState.Remove("imagenSecundaria3"); }
             if (ModelState.ContainsKey("imagenSecundaria4")) { ModelState.Remove("imagenSecundaria4"); }
 
-
-            // --------------------------------------------------------
-
-
-            // --- Lógica de Imagen Principal: Verifica si *no* se subió un archivo nuevo. ---
+            // Gestiona la lógica de persistencia o reemplazo para el recurso visual principal.
             if (imagenSubida == null || imagenSubida.Length == 0)
             {
-                // No se subió archivo nuevo
                 if (eliminarImagenPrincipal)
                 {
-                    // Marcó eliminar Y no subió uno nuevo. Error.
-                    ModelState.AddModelError("imagenSubida", "No puede eliminar la imagen principal sin subir una de reemplazo.");
-                    producto.proImagen = productoActual.proImagen; // Mantiene la actual para la vista
+                    ModelState.AddModelError("imagenSubida", "No puede eliminar la imagen principal sin proveer una de reemplazo.");
+                    producto.proImagen = productoActual.proImagen;
                 }
                 else if (string.IsNullOrEmpty(productoActual.proImagen))
                 {
-                    // No subió archivo nuevo Y no había uno antes. Error.
                     ModelState.AddModelError("imagenSubida", "La imagen principal es obligatoria para la edición del producto.");
                 }
                 else
                 {
-                    // No subió archivo nuevo, no marcó eliminar, y sí había uno. OK.
                     producto.proImagen = productoActual.proImagen;
                 }
             }
-            // Si se subió un archivo nuevo, la lógica en if(ModelState.IsValid) se encargará.
 
+            // Procesa selectivamente las imágenes secundarias basándose en los indicadores de eliminación o nuevos archivos.
+            producto.proImagen2 = eliminarImagen2 ? null : (await GuardarImagen(imagenSecundaria2) ?? productoActual.proImagen2);
+            producto.proImagen3 = eliminarImagen3 ? null : (await GuardarImagen(imagenSecundaria3) ?? productoActual.proImagen3);
+            producto.proImagen4 = eliminarImagen4 ? null : (await GuardarImagen(imagenSecundaria4) ?? productoActual.proImagen4);
 
-            // --- Lógica de Imágenes Secundarias (opcionales) ---
+            // Valida la unicidad del nombre frente a otros registros existentes.
+            if (producto.proNombre != null)
+            {
+                var nombreNormalizado = producto.proNombre.Trim().ToUpper();
+                bool yaExisteEnOtro = await _context.Producto
+                                    .AnyAsync(p => p.proNombre.Trim().ToUpper() == nombreNormalizado && p.proId != producto.proId);
 
-            // Imagen 2
-            if (eliminarImagen2)
-            {
-                producto.proImagen2 = null; // Si el checkbox 'eliminar' está marcado, la pone en null.
-            }
-            else
-            {
-                // Si no, intenta guardar la nueva imagen. Si no se subió (null), mantiene la actual.
-                producto.proImagen2 = await GuardarImagen(imagenSecundaria2) ?? productoActual.proImagen2;
-            }
-
-            // Imagen 3
-            if (eliminarImagen3)
-            {
-                producto.proImagen3 = null; // Borrar
-            }
-            else
-            {
-                producto.proImagen3 = await GuardarImagen(imagenSecundaria3) ?? productoActual.proImagen3;
+                if (yaExisteEnOtro)
+                {
+                    ModelState.AddModelError("proNombre", "Ya existe otro producto con este nombre.");
+                }
             }
 
-            // Imagen 4
-            if (eliminarImagen4)
-            {
-                producto.proImagen4 = null; // Borrar
-            }
-            else
-            {
-                producto.proImagen4 = await GuardarImagen(imagenSecundaria4) ?? productoActual.proImagen4;
-            }
-
-            // --------------------------------------------------------
-
-            // 5. Si el modelo (y la validación manual) es válido...
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // --- Guardar la NUEVA imagen Principal (si se subió) ---
                     if (imagenSubida != null && imagenSubida.Length > 0)
                     {
                         producto.proImagen = await GuardarImagen(imagenSubida);
                     }
 
-                    // Preserva la fecha de creación original.
                     producto.prodCreacion = productoActual.prodCreacion;
 
-
-                    // Lógica de "Producto Destacado Único".
+                    // Implementa la política de exclusividad para el producto destacado.
                     if (producto.EsDestacado)
                     {
-                        // Busca todos los *otros* productos que estén destacados...
                         var destacadosAnteriores = await _context.Producto
                             .Where(p => p.EsDestacado && p.proId != producto.proId)
                             .ToListAsync();
 
-                        // ...y les quita la marca 'EsDestacado'.
                         foreach (var p in destacadosAnteriores)
                         {
                             p.EsDestacado = false;
                         }
                     }
-                    // --- Actualización Final ---
 
-                    // Marca el producto (con todos sus cambios) para Actualizar.
                     _context.Update(producto);
-
-                    // Guarda todos los cambios (el Update del 'producto' y los Updates de los 'destacadosAnteriores').
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction(nameof(Index));
                 }
-
-                // Manejo de errores de concurrencia (si dos admins editan a la vez).
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProductoExists(producto.proId)) { return NotFound(); }
@@ -313,46 +273,41 @@ namespace Drippin.Controllers
                 }
             }
 
-            // Si la validación falla, recarga los dropdowns y muestra el formulario de nuevo.
             ViewData["Action"] = "Edit";
             ViewBag.CategoriaId = new SelectList(_context.Categoria, "CategoriaId", "CatNombre", producto.CategoriaId);
+            ViewBag.TandaId = new SelectList(_context.Tanda, "TandaId", "TanNombre", producto.proTandaId);
             return View(producto);
         }
 
-        /*
-         * --- MÉTODO AUXILIAR para Subir Archivos ---
-         * Método privado para guardar un archivo IFormFile en el servidor.
-         * Recibe el archivo, lo guarda en 'wwwroot/images/drippin' con un nombre único
-         * y devuelve la ruta relativa (ej. '~/images/drippin/...') para guardar en la BD.
-         * Si el archivo de entrada es nulo, devuelve null.
-         */
+        /// <summary>
+        /// Persiste un flujo de archivo en el sistema de almacenamiento y retorna la ruta relativa de acceso.
+        /// </summary>
+        /// <param name="imagenSubida">Archivo recibido desde la solicitud HTTP.</param>
+        /// <returns>Ruta virtual del recurso almacenado o null si no se proveyó un archivo válido.</returns>
         private async Task<string> GuardarImagen(IFormFile imagenSubida)
         {
-            // Solo procesa si el archivo existe.
             if (imagenSubida != null && imagenSubida.Length > 0)
             {
-                // Define la carpeta física de destino.
                 string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "drippin");
-                // Crea un nombre de archivo único para evitar colisiones.
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + imagenSubida.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                // Asegura que la carpeta de destino exista
                 Directory.CreateDirectory(uploadsFolder);
 
-                // Crea o sobrescribe el archivo en el disco.
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    // Copia los datos del archivo subido al archivo en disco.
                     await imagenSubida.CopyToAsync(fileStream);
                 }
-                // Devuelve la ruta relativa que se guardará en la BD.
                 return "~/images/drippin/" + uniqueFileName;
             }
-            return null; // Retorna null si no se subió ningún archivo
+            return null;
         }
 
-        // GET: Productos/Delete/5 - Muestra la página de confirmación de borrado.
+        /// <summary>
+        /// Presenta la vista de confirmación para la eliminación de un producto.
+        /// Retorna: <see cref="Views.Productos.Delete"/>
+        /// </summary>
+        /// <param name="id">Identificador único del producto.</param>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -360,38 +315,38 @@ namespace Drippin.Controllers
                 return NotFound();
             }
 
-            // Busca el producto (sin incluir categoría, no es necesario).
             var producto = await _context.Producto
                 .FirstOrDefaultAsync(m => m.proId == id);
+
             if (producto == null)
             {
                 return NotFound();
             }
 
-            // Muestra la vista de confirmación.
             return View(producto);
         }
 
-        // POST: Productos/Delete/5 - Confirma y ejecuta el borrado.
+        /// <summary>
+        /// Procesa la eliminación definitiva de un producto del catálogo.
+        /// </summary>
+        /// <param name="id">Identificador único del producto a eliminar.</param>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            // Busca el producto a borrar por ID.
             var producto = await _context.Producto.FindAsync(id);
             if (producto != null)
             {
-                // Lo marca para eliminar.
                 _context.Producto.Remove(producto);
             }
 
-            // Ejecuta el borrado en la BD.
             await _context.SaveChangesAsync();
-            // Redirige a la lista.
             return RedirectToAction(nameof(Index));
         }
 
-        // Método auxiliar de EF para verificar existencia.
+        /// <summary>
+        /// Valida la existencia concurrente de un producto por su identificador.
+        /// </summary>
         private bool ProductoExists(int id)
         {
             return _context.Producto.Any(e => e.proId == id);

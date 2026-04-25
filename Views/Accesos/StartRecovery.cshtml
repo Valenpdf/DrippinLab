@@ -1,7 +1,8 @@
-﻿@model Drippin.Models.ViewModel.RecoveryViewModel
+@model Drippin.Models.ViewModel.RecoveryViewModel
+@* Vista retornada por: AccesosController.StartRecovery *@
 @{
     ViewData["Title"] = "Recuperar Contraseña";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Asegúrate de usar tu layout principal
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
@@ -15,6 +16,7 @@
                 </p>
 
                 <form asp-action="StartRecovery" method="post">
+                    @* Proyección de errores de validación de modelo detectados en el servidor. *@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                     <div class="mb-3">
@@ -35,7 +37,10 @@
                 </form>
             </div>
 
-            @* Sección para mostrar mensajes temporales (TempData) *@
+            @* 
+               Renderización condicional de notificaciones de éxito o información 
+               provenientes del diccionario TempData del controlador. 
+            *@
             @if (TempData["SuccessMessage"] != null)
             {
                     <div class="alert alert-success mt-3 text-center" role="alert">
@@ -53,6 +58,7 @@
 </div>
 
 @section Scripts {
+    @* Inyección de scripts para la validación asíncrona de formularios en el cliente. *@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

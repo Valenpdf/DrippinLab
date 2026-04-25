@@ -1,7 +1,8 @@
-﻿@model Drippin.Models.Usuario
+@model Drippin.Models.Usuario
+@* Vista retornada por: UsuariosController.Create *@
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuevo Usuario";
 }
 
 <style>
@@ -24,42 +25,44 @@
 
 </style>
 
-<h1>Crear Usuario</h1>
+<h1>Alta de Usuario</h1>
 
-<h4>Usuario</h4>
+<h4 class="text-white">Especificación de Identidad y Privilegios</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+            @* Proyección de errores de validación de modelo capturados en el servidor. *@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
 
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="UsNombre" class="control-label"></label>
                 <input asp-for="UsNombre" class="form-control" />
                 <span asp-validation-for="UsNombre" class="text-danger"></span>
             </div>
             
-            <div class="form-group">
-                <label asp-for="UsApellido" class="control-label"></label> @* Asumo que tienes Apellido en tu modelo*@
+            <div class="form-group mb-2">
+                <label asp-for="UsApellido" class="control-label"></label>
                 <input asp-for="UsApellido" class="form-control" />
                 <span asp-validation-for="UsApellido" class="text-danger"></span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="UsCorreo" class="control-label"></label>
                 <input asp-for="UsCorreo" class="form-control" />
                 <span asp-validation-for="UsCorreo" class="text-danger"></span>
             </div>
             
-            <div class="form-group">
+            @* Gestión de credenciales mediante almacenamiento de hash de seguridad. *@
+            <div class="form-group mb-2">
                 <label asp-for="PasswordHash" class="control-label"></label>
                 <input asp-for="PasswordHash" class="form-control" type="password" /> 
                 <span asp-validation-for="PasswordHash" class="text-danger"></span>
             </div>
             
-            @* Usando SelectList de ViewBag (ViewData) *@
-            <div class="form-group">
+            @* Asignación de perfil de seguridad basada en el conjunto de roles definidos. *@
+            <div class="form-group mb-2">
                 <label asp-for="IdRol" class="control-label"></label>
                 <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol">
                     <option value="">-- Seleccionar Rol --</option>
@@ -68,16 +71,17 @@
             </div>
 
             <div class="form-group mt-3">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Confirmar Registro" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Volver a la Lista</a>
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
 </div>
 
 @section Scripts {
+    @* Inyección de recursos para la validación asíncrona de formularios en el cliente. *@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

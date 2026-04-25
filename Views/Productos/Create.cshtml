@@ -1,5 +1,5 @@
-﻿@model Drippin.Models.Producto
-@* Importante: Se asume que has incluido los estilos custom en _Layout o has vinculado 'adminproductos.css' *@
+@model Drippin.Models.Producto
+@* Vista retornada por: ProductosController.Create *@
 
 @{
     ViewData["Title"] = "Crear Producto";
@@ -15,13 +15,17 @@
 
     <hr/>
 
-    @* IMPORTANTE: Se añade enctype="multipart/form-data" para permitir la subida de archivos *@
+    @* 
+       Configuración del formulario con soporte para codificación multipart/form-data, 
+       permitiendo la transferencia de recursos binarios (imágenes) al servidor. 
+    *@
     <div class="form-card">
         <form asp-action="Create" enctype="multipart/form-data">
+            @* Proyección de errores de validación de modelo capturados en el servidor. *@
             <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
             
-            @* --- COLUMNA IZQUIERDA: Detalles del Producto --- *@
             <div class="row">
+                @* Segmento de atributos descriptivos y categorización del producto. *@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="proNombre" class="control-label"></label>
@@ -40,82 +44,77 @@
                         <select asp-for="CategoriaId" class="form-control filter-dropdown" asp-items="ViewBag.CategoriaId"></select>
                         <span asp-validation-for="CategoriaId" class="text-danger"></span>
                     </div>
-
-                    
                 </div>
 
-                @* --- COLUMNA DERECHA: Imágenes de Subida (Todas File) --- *@
-<div class="col-md-6">
+                @* Segmento de gestión y carga de recursos visuales (Imágenes). *@
+                <div class="col-md-6">
     
-    @* --- CAMPO 1: IMAGEN PRINCIPAL (con Icono de Pista) --- *@
-    <div class="form-group file-upload-group">
-        <div class="label-with-hint">
-            @* Se usa span para el título para no interferir con el label del botón *@
-            <span class="control-label-text">Imagen Principal</span> 
-            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Obligatoriamente la imagen debe estar en wwwroot/images/drippin">
-                <i class="fa-solid fa-circle-exclamation"></i>
-            </span>
-        </div>
-        
-        <label for="imagenSubida" class="control-label file-upload-label primary-upload-label">
-            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Principal (wwwroot/images/*)
-        </label>
-        <input type="file" id="imagenSubida" name="imagenSubida" class="form-control custom-file-input" accept="image/*" />
-        <input type="hidden" asp-for="proImagen" />
-        <span class="text-danger">@Html.ValidationMessage("imagenSubida")</span>
-    </div>
+                    @* Entrada de datos para la imagen principal del producto. *@
+                    <div class="form-group file-upload-group">
+                        <div class="label-with-hint">
+                            <span class="control-label-text">Imagen Principal</span> 
+                            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="La imagen debe ubicarse en el directorio wwwroot/images/drippin">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            </span>
+                        </div>
+                        
+                        <label for="imagenSubida" class="control-label file-upload-label primary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Principal (wwwroot/images/*)
+                        </label>
+                        <input type="file" id="imagenSubida" name="imagenSubida" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen" />
+                        <span class="text-danger">@Html.ValidationMessage("imagenSubida")</span>
+                    </div>
     
-    @* --- CAMPO 2: IMAGEN SECUNDARIA 2 (Usando estructura de pista) --- *@
-    <div class="form-group file-upload-group">
-        <div class="label-with-hint">
-            <span class="control-label-text">Imagen Secundaria 2</span> 
-            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Opcional. La imagen debe estar en wwwroot/images/drippin">
-                <i class="fa-solid fa-info-circle"></i>
-            </span>
-        </div>
-        <label for="imagenSubida2" class="control-label file-upload-label secondary-upload-label">
-            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 2
-        </label>
-        <input type="file" id="imagenSubida2" name="imagenSubida2" class="form-control custom-file-input" accept="image/*" />
-        <input type="hidden" asp-for="proImagen2" />
-        <span class="text-danger">@Html.ValidationMessage("imagenSubida2")</span>
-    </div>
+                    @* Entradas de datos para imágenes complementarias secundarias. *@
+                    <div class="form-group file-upload-group">
+                        <div class="label-with-hint">
+                            <span class="control-label-text">Imagen Secundaria 2</span> 
+                            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Atributo opcional para vistas de detalle extendidas.">
+                                <i class="fa-solid fa-info-circle"></i>
+                            </span>
+                        </div>
+                        <label for="imagenSubida2" class="control-label file-upload-label secondary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 2
+                        </label>
+                        <input type="file" id="imagenSubida2" name="imagenSubida2" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen2" />
+                        <span class="text-danger">@Html.ValidationMessage("imagenSubida2")</span>
+                    </div>
 
-    @* --- CAMPO 3: IMAGEN SECUNDARIA 3 (Usando estructura de pista) --- *@
-    <div class="form-group file-upload-group">
-        <div class="label-with-hint">
-            <span class="control-label-text">Imagen Secundaria 3</span> 
-            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Opcional. La imagen debe estar en wwwroot/images/drippin">
-                <i class="fa-solid fa-info-circle"></i>
-            </span>
-        </div>
-        <label for="imagenSubida3" class="control-label file-upload-label secondary-upload-label">
-            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 3
-        </label>
-        <input type="file" id="imagenSubida3" name="imagenSubida3" class="form-control custom-file-input" accept="image/*" />
-        <input type="hidden" asp-for="proImagen3" />
-        <span class="text-danger">@Html.ValidationMessage("imagenSubida3")</span>
-    </div>
+                    <div class="form-group file-upload-group">
+                        <div class="label-with-hint">
+                            <span class="control-label-text">Imagen Secundaria 3</span> 
+                            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Atributo opcional para vistas de detalle extendidas.">
+                                <i class="fa-solid fa-info-circle"></i>
+                            </span>
+                        </div>
+                        <label for="imagenSubida3" class="control-label file-upload-label secondary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 3
+                        </label>
+                        <input type="file" id="imagenSubida3" name="imagenSubida3" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen3" />
+                        <span class="text-danger">@Html.ValidationMessage("imagenSubida3")</span>
+                    </div>
     
-    @* --- CAMPO 4: IMAGEN SECUNDARIA 4 (Usando estructura de pista) --- *@
-    <div class="form-group file-upload-group">
-        <div class="label-with-hint">
-            <span class="control-label-text">Imagen Secundaria 4</span> 
-            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Opcional. La imagen debe estar en wwwroot/images/drippin">
-                <i class="fa-solid fa-info-circle"></i>
-            </span>
-        </div>
-        <label for="imagenSubida4" class="control-label file-upload-label secondary-upload-label">
-            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 4
-        </label>
-        <input type="file" id="imagenSubida4" name="imagenSubida4" class="form-control custom-file-input" accept="image/*" />
-        <input type="hidden" asp-for="proImagen4" />
-        <span class="text-danger">@Html.ValidationMessage("imagenSubida4")</span>
-    </div>
+                    <div class="form-group file-upload-group">
+                        <div class="label-with-hint">
+                            <span class="control-label-text">Imagen Secundaria 4</span> 
+                            <span class="hint-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Atributo opcional para vistas de detalle extendidas.">
+                                <i class="fa-solid fa-info-circle"></i>
+                            </span>
+                        </div>
+                        <label for="imagenSubida4" class="control-label file-upload-label secondary-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Subir Imagen Secundaria 4
+                        </label>
+                        <input type="file" id="imagenSubida4" name="imagenSubida4" class="form-control custom-file-input" accept="image/*" />
+                        <input type="hidden" asp-for="proImagen4" />
+                        <span class="text-danger">@Html.ValidationMessage("imagenSubida4")</span>
+                    </div>
+                </div>
+            </div>
 
-</div>
-
-            @* --- CHECKBOXES y BOTONES --- *@
+            @* Segmento de configuración de visibilidad y estados destacados. *@
             <hr class="form-section-divider" />
             <div class="row align-items-center">
                 <div class="col-md-6 checkbox-group">
@@ -142,13 +141,15 @@
 </div>
 
 @section Scripts {
-    @* Carga los scripts de validación de ASP.NET *@
+    @* Inyección de recursos para la validación asíncrona de formularios en el cliente. *@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Este script muestra el nombre del archivo seleccionado junto al botón.
-            // Es la forma más sencilla de diferenciar si hay un archivo 'subido' o no en la vista Create/Edit.
+            @* 
+               Funcionalidad de retroalimentación visual para la selección de archivos. 
+               Actualiza dinámicamente las etiquetas de los controles de carga al detectar cambios. 
+            *@
             const fileInputs = document.querySelectorAll('.custom-file-input');
 
             fileInputs.forEach(input => {
@@ -157,18 +158,15 @@
                     input.addEventListener('change', function() {
                         if (this.files && this.files.length > 0) {
                             label.innerHTML = `<i class="fa-solid fa-check me-2"></i> Archivo listo: ${this.files[0].name}`;
-                            label.classList.add('file-ready'); // Clase para cambiar el color de fondo
+                            label.classList.add('file-ready'); 
                         } else {
-                            // Restaurar si el archivo es deseleccionado
                             label.innerHTML = label.getAttribute('data-default-text');
                             label.classList.remove('file-ready');
                         }
                     });
-                    // Guardar el texto original del label
                     label.setAttribute('data-default-text', label.innerHTML);
                 }
             });
         });
     </script>
-
 }

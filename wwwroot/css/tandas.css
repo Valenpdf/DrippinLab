@@ -1,0 +1,344 @@
+/* ========================================================
+   TANDAS.CSS — Sistema de Drops / Lanzamientos (Drippin)
+   Estilos para:
+   1. Banner de tanda en la página Home (Index)
+   2. Panel de administración de Tandas
+   ======================================================== */
+
+/* --------------------------------------------------------
+   1. BANNER DE TANDA EN EL HOME
+   -------------------------------------------------------- */
+
+/* Cuando el banner de tanda es insertado por JS dentro del
+   CSS grid (.contenedor-productos), necesita ocupar todas las
+   columnas disponibles para "romper" la fila correctamente. */
+#productos-grid .tanda-banner {
+    grid-column: 1 / -1;
+    /* Span de la primera a la última columna */
+    width: 100%;
+}
+
+/* Contenedor full-width que interrumpe la grilla de productos */
+.tanda-banner {
+    width: 100%;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 50%, #111111 100%);
+    border-top: 1px solid #2a2a2a;
+    border-bottom: 1px solid #2a2a2a;
+    padding: 3rem 2rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Línea decorativa de acento a la izquierda */
+.tanda-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #ff3333, #ff6666, transparent);
+}
+
+/* Header superior del banner */
+.tanda-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Bloque izquierdo: etiqueta + nombre de la colección */
+.tanda-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* Pequeña etiqueta "NUEVA COLECCIÓN" */
+.tanda-label {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ff3333;
+    font-weight: 700;
+}
+
+/* Nombre grande de la tanda */
+.tanda-nombre {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* Botón "Ver Colección" */
+.btn-ver-coleccion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    color: #e0e0e0;
+    border: 1px solid #555555;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-ver-coleccion:hover {
+    background-color: #ff3333;
+    color: #0d0d0d;
+    border-color: #ff3333;
+}
+
+.btn-ver-coleccion .arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+.btn-ver-coleccion:hover .arrow-icon {
+    transform: translateX(4px);
+}
+
+/* ---- Swiper de Tanda ---- */
+.swiper-tanda {
+    width: 100%;
+    overflow: hidden;
+}
+
+.swiper-tanda .swiper-slide {
+    width: auto;
+}
+
+/* Card de producto dentro del slider de tanda */
+.tanda-slide-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 200px;
+}
+
+.tanda-slide-card:hover {
+    transform: translateY(-5px);
+    border-color: #444444;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    color: inherit;
+}
+
+.tanda-slide-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.tanda-slide-info {
+    padding: 0.6rem 0.8rem;
+}
+
+.tanda-slide-nombre {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 0 0.2rem 0;
+    letter-spacing: 0.5px;
+}
+
+.tanda-slide-precio {
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin: 0;
+}
+
+/* Navegación del swiper de tanda */
+.tanda-swiper-nav {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tanda-nav-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #e0e0e0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-size: 0.9rem;
+}
+
+.tanda-nav-btn:hover {
+    background-color: #333;
+    border-color: #777;
+}
+
+/* Responsive: en mobile el slide card es más pequeño y el banner más compacto */
+@media (max-width: 768px) {
+    .tanda-slide-card {
+        width: 150px;
+    }
+
+    .tanda-slide-img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .tanda-banner {
+        padding: 1rem 1rem;
+        /* Reducido de 2rem a 1rem */
+    }
+
+    .tanda-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+        /* Reducido de 1.5rem a 0.5rem */
+    }
+
+    .tanda-swiper-nav {
+        margin-top: -5px;
+        /* Margen negativo leve para pegar los botones a las cards */
+    }
+}
+
+/* --------------------------------------------------------
+   2. PANEL DE ADMINISTRACIÓN DE TANDAS
+   -------------------------------------------------------- */
+
+/* Badge de estado de visibilidad */
+.badge-visible {
+    background-color: #1a4d1a;
+    color: #66ff66;
+    border: 1px solid #2d8a2d;
+    font-size: 0.7rem;
+    padding: 0.25em 0.6em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.badge-oculto {
+    background-color: #3d1a1a;
+    color: #ff6666;
+    border: 1px solid #8a2d2d;
+    font-size: 0.7rem;
+    padding: 0.25em 0.6em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+/* Botón toggle de visibilidad en el panel admin */
+.btn-toggle-visible {
+    background-color: transparent;
+    border: 1px solid #2d8a2d;
+    color: #66ff66;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-toggle-visible:hover {
+    background-color: #2d8a2d;
+    color: #0d0d0d;
+}
+
+.btn-toggle-oculto {
+    background-color: transparent;
+    border: 1px solid #8a2d2d;
+    color: #ff6666;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-toggle-oculto:hover {
+    background-color: #8a2d2d;
+    color: #ffffff;
+}
+
+/* Tarjeta de tanda en el admin */
+.tanda-admin-card {
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    transition: background-color 0.2s;
+}
+
+.tanda-admin-card:hover {
+    background-color: #202020;
+}
+
+.tanda-admin-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.tanda-admin-nombre {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0 0 0.3rem 0;
+}
+
+.tanda-admin-meta {
+    font-size: 0.78rem;
+    color: #888888;
+    margin: 0;
+}
+
+.tanda-admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Fecha opcional en el formulario admin */
+.fecha-opcional-label {
+    font-size: 0.72rem;
+    color: #888;
+    margin-left: 0.4rem;
+    font-weight: 400;
+    letter-spacing: 0;
+}

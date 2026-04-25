@@ -1,4 +1,4 @@
-﻿using Drippin.Data;
+using Drippin.Data;
 using Drippin.Models;
 using Drippin.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -12,24 +12,44 @@ using System.Threading.Tasks;
 
 namespace Drippin.Controllers
 {
+    /// <summary>
+    /// Gestiona las operaciones administrativas de usuarios, permitiendo la consulta,
+    /// creación, edición y eliminación de perfiles dentro del sistema.
+    /// Retorna vistas en: <see cref="Views.Usuarios"/>
+    /// Utiliza: <see cref="Usuario"/> y <see cref="Role"/>.
+    /// </summary>
     public class UsuariosController : Controller
     {
+        /// <summary>
+        /// Contexto de acceso a datos para la gestión de usuarios.
+        /// </summary>
         private readonly DrippinContext _context;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de <see cref="UsuariosController"/>.
+        /// </summary>
+        /// <param name="context">Contexto de base de datos inyectado.</param>
         public UsuariosController(DrippinContext context)
         {
             _context = context;
         }
 
-        // GET: Usuarios
-
-        [Authorize(Roles = "Administrador")]    // Validación de rol para entrar al CRUD de Usuarios
+        /// <summary>
+        /// Presenta el listado completo de usuarios registrados. Acceso restringido a administradores.
+        /// Retorna: <see cref="Views.Usuarios.Index"/>
+        /// </summary>
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Usuario.ToListAsync());
         }
 
-        // GET: Usuarios/Details/5
+        /// <summary>
+        /// Resuelve los detalles de un usuario específico por su identificador. Acceso restringido a administradores.
+        /// Retorna: <see cref="Views.Usuarios.Details"/>
+        /// </summary>
+        /// <param name="id">Identificador único del usuario.</param>
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,6 +59,7 @@ namespace Drippin.Controllers
 
             var usuario = await _context.Usuario
                 .FirstOrDefaultAsync(m => m.IdUsuario == id);
+
             if (usuario == null)
             {
                 return NotFound();
@@ -47,32 +68,36 @@ namespace Drippin.Controllers
             return View(usuario);
         }
 
-        // GET: Usuarios/Create
+        /// <summary>
+        /// Presenta la vista para la creación de un nuevo usuario, cargando los roles disponibles.
+        /// Retorna: <see cref="Views.Usuarios.Create"/>
+        /// </summary>
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create()
         {
-            // Cargar la lista de Roles en ViewBag
+            // Provee el listado de roles para la selección en el formulario.
             ViewBag.IdRol = new SelectList(await _context.Role.ToListAsync(), "IdRol", "NombreRol");
 
-            // Inicializar campos que no deberían ser editados
             var nuevoUsuario = new Usuario
             {
-                FechaRegistro = DateTime.Now.Date // inicializar la fecha
+                FechaRegistro = DateTime.Now.Date
             };
 
             return View();
         }
 
-        // POST: Usuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Procesa la creación de un nuevo usuario tras validar los datos y realizar el hasheo de la contraseña.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UsNombre,UsApellido,UsCorreo,PasswordHash,IdRol")] Usuario usuario)
         {
-            if (ModelState.IsValid) // ✅ Corregido
+            if (ModelState.IsValid) 
             {
                 try
                 {
+                    // Aplica algoritmos de cifrado a la contraseña y establece los metadatos de registro.
                     usuario.PasswordHash = Encrypt.HashPassword(usuario.PasswordHash);
                     usuario.FechaRegistro = DateTime.Now;
 
@@ -86,13 +111,15 @@ namespace Drippin.Controllers
                 }
             }
 
-            // Si hay error, recargar ViewBag
             ViewBag.IdRol = new SelectList(await _context.Role.ToListAsync(), "IdRol", "NombreRol", usuario.IdRol);
             return View(usuario);
         }
-        
 
-        // GET: Usuarios/Edit/5
+        /// <summary>
+        /// Presenta el formulario para la edición de un usuario existente.
+        /// Retorna: <see cref="Views.Usuarios.Edit"/>
+        /// </summary>
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -108,9 +135,9 @@ namespace Drippin.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Procesa la actualización de los datos de un usuario existente.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,UsNombre,UsApellido,UsCorreo,PasswordHash,IdRol,FechaRegistro,Token,FechaExpiracionToken")] Usuario usuario)
@@ -145,7 +172,11 @@ namespace Drippin.Controllers
             return View(usuario);
         }
 
-        // GET: Usuarios/Delete/5
+        /// <summary>
+        /// Presenta la vista de confirmación para la eliminación de un usuario.
+        /// Retorna: <see cref="Views.Usuarios.Delete"/>
+        /// </summary>
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -155,6 +186,7 @@ namespace Drippin.Controllers
 
             var usuario = await _context.Usuario
                 .FirstOrDefaultAsync(m => m.IdUsuario == id);
+
             if (usuario == null)
             {
                 return NotFound();
@@ -163,7 +195,9 @@ namespace Drippin.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Delete/5
+        /// <summary>
+        /// Procesa la eliminación definitiva de un usuario de la base de datos.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -178,6 +212,9 @@ namespace Drippin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Valida la existencia de un usuario por su identificador.
+        /// </summary>
         private bool UsuarioExists(int id)
         {
             return _context.Usuario.Any(e => e.IdUsuario == id);

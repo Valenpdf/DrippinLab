@@ -1,11 +1,11 @@
-﻿@model IEnumerable<Drippin.Models.Categoria>
+@model IEnumerable<Drippin.Models.Categoria>
+@* Vista retornada por: CategoriasController.Index *@
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Categorías";
 }
 
 <style>
-
     th {
         color: white;
     }
@@ -21,35 +21,36 @@
     div {
         color: white;
     }
-
 </style>
 
-<h1>Index</h1>
+<h1>Administración de Categorías</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Crear Nueva Categoría</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.CatNombre)
             </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CatNombre)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CategoriaId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CategoriaId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CategoriaId">Delete</a>
-            </td>
-        </tr>
-}
+        @* Iteración sobre la colección de categorías para su visualización en formato tabular. *@
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CatNombre)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.CategoriaId">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.CategoriaId">Detalles</a> |
+                        <a asp-action="Delete" asp-route-id="@item.CategoriaId">Eliminar</a>
+                    </td>
+                </tr>
+        }
     </tbody>
 </table>

@@ -1,4 +1,4 @@
-﻿@model Drippin.Models.Producto
+@model Drippin.Models.Producto
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
 
@@ -9,40 +9,37 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <div class="contenedor-destacado">
-    <!-- Swiper para imágenes del producto -->
+    @* Componente de visualización dinámica (Swiper) para la galería de imágenes del producto. *@
     <div class="swiper swiper-destacado">
         <div class="swiper-wrapper">
+            @* Renderización condicional de recursos visuales basada en la disponibilidad de rutas en el modelo. *@
             @if (!string.IsNullOrEmpty(Model.proImagen))
             {
-                var imageUrl = Model.proImagen.StartsWith("~") || Model.proImagen.StartsWith("/") ? Model.proImagen : $"/{Model.proImagen}";
                 <div class="swiper-slide">
-                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                    <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen))" alt="Producto: @Model.proNombre">
                 </div>
             }
             @if (!string.IsNullOrEmpty(Model.proImagen2))
             {
-                var imageUrl = Model.proImagen2.StartsWith("~") || Model.proImagen2.StartsWith("/") ? Model.proImagen2 : $"/{Model.proImagen2}";
                 <div class="swiper-slide">
-                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                    <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen2))" alt="Producto: @Model.proNombre">
                 </div>
             }
             @if (!string.IsNullOrEmpty(Model.proImagen3))
             {
-                var imageUrl = Model.proImagen3.StartsWith("~") || Model.proImagen3.StartsWith("/") ? Model.proImagen3 : $"/{Model.proImagen3}";
                 <div class="swiper-slide">
-                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                    <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen3))" alt="Producto: @Model.proNombre">
                 </div>
             }
             @if (!string.IsNullOrEmpty(Model.proImagen4))
             {
-                var imageUrl = Model.proImagen4.StartsWith("~") || Model.proImagen4.StartsWith("/") ? Model.proImagen4 : $"/{Model.proImagen4}";
                 <div class="swiper-slide">
-                    <img src="@Url.Content(imageUrl)" alt="Producto: @Model.proNombre">
+                    <img src="@Url.Content(ImageHelper.FormatearRuta(Model.proImagen4))" alt="Producto: @Model.proNombre">
                 </div>
             }
         </div>
 
-
+        @* Controles de navegación y paginación para la interfaz de usuario. *@
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
         <div class="swiper-pagination"></div>
@@ -57,6 +54,7 @@
             
 
             
+                @* Indicador visual para productos con estatus de alta prioridad (Destacado). *@
                 @if (Model.EsDestacado == true)
                 {
                     <div class="descripcion-destacado">
@@ -85,10 +83,9 @@
 
         <form asp-controller="Carritos" asp-action="AgregarAlCarrito" method="post">
     
-            @* Campo oculto: CRUCIAL para enviar el ID del producto al controlador *@
+            @* Inyección del identificador único del producto para el procesamiento de la orden en el servidor. *@
             <input type="hidden" name="proId" value="@Model.proId" />
     
-            @* El Botón visible para el usuario *@
             <button type="submit" class="btn btn-success btn-lg w-100">
                 <i class="fa-solid fa-cart-plus me-2"></i> Agregar al Carrito
             </button>
@@ -99,32 +96,30 @@
     
 
 
-<!-- JS DEL SWIPER -->
 <script>
-
-            const swiper = new Swiper('.swiper-destacado', {
-      // Optional parameters
+    @* 
+       Inicialización y configuración del motor de carrusel Swiper. 
+       Define parámetros de navegación, autoplay y responsividad (breakpoints). 
+    *@
+    const swiper = new Swiper('.swiper-destacado', {
       direction: 'horizontal',
       slidesPerView: 1,
       spaceBetween: 10,
       autoplay: {
-        delay: 3000, // milisegundos entre cada slide (3000ms = 3 segundos)
-        disableOnInteraction: false // el autoplay continúa aunque el usuario interactúe
+        delay: 3000, 
+        disableOnInteraction: false 
         },
       loop: true,
 
-      // If we need pagination
       pagination: {
         el: '.swiper-pagination',
       },
 
-      // Navigation arrows
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       },
 
-      // And if we need scrollbar
       scrollbar: {
         el: '.swiper-scrollbar',
       },
@@ -134,11 +129,6 @@
               slidesPerView: 2,
               spaceBetween: 10,
           },
-
-
       },
-
     });
-
 </script>
-

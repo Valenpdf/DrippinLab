@@ -1,0 +1,125 @@
+@model IEnumerable<Drippin.Models.Tanda>
+@* Vista retornada por: TandasController.Index *@
+
+@{
+    ViewData["Title"] = "Gestión de Tandas";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/adminproductos.css" />
+<link rel="stylesheet" href="~/css/tandas.css" />
+
+<div class="full-width-panel-wrapper">
+
+    <div class="content-container admin-panel-view">
+
+        @* Notificaciones de retroalimentación para operaciones de persistencia exitosas. *@
+        @if (TempData["MensajeExito"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Operación Exitosa:</strong> @TempData["MensajeExito"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="header-actions">
+            <h1>GESTIÓN DE TANDAS</h1>
+            <a asp-action="Create" class="btn-primary-drippin">
+                <i class="fa-solid fa-plus me-1"></i> Nueva Tanda
+            </a>
+        </div>
+
+        @* 
+           Especificación de comportamiento para la visualización intercalada en el front-end. 
+           Las tandas activas se distribuyen dinámicamente en la grilla de productos según el punto de interrupción (Breakpoint). 
+        *@
+        <p class="text-secondary mb-4" style="font-size:0.85rem; letter-spacing:1px;">
+            Las tandas visibles se intercalan automáticamente en el catálogo: cada 4 unidades en móvil, 8 en tablet y 10 en escritorio.
+        </p>
+
+        <hr />
+
+        @* Validación de existencia de registros para la renderización de la interfaz. *@
+        @if (!Model.Any())
+        {
+            <p class="no-products">No se han detectado tandas registradas en el sistema.</p>
+        }
+        else
+        {
+            <div class="mt-3">
+                @* Iteración sobre el conjunto de tandas para la generación de tarjetas administrativas. *@
+                @foreach (var tanda in Model)
+                {
+                    <div class="tanda-admin-card">
+
+                        @* Despliegue de atributos principales y metadatos de la tanda. *@
+                        <div class="tanda-admin-info">
+                            <p class="tanda-admin-nombre">
+                                @tanda.TanNombre
+                                &nbsp;
+                                @if (tanda.TanVisible)
+                                {
+                                    <span class="badge-visible">Visible</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-oculto">Oculta</span>
+                                }
+                            </p>
+                            <p class="tanda-admin-meta">
+                                <i class="fa-solid fa-box me-1"></i>
+                                @(tanda.Productos?.Count ?? 0) producto(s) asociado(s)
+
+                                @if (tanda.TanFechaInicio.HasValue || tanda.TanFechaFin.HasValue)
+                                {
+                                    <span class="ms-3">
+                                        <i class="fa-solid fa-calendar me-1"></i>
+                                        @(tanda.TanFechaInicio.HasValue ? tanda.TanFechaInicio.Value.ToString("dd/MM/yyyy") : "—")
+                                        →
+                                        @(tanda.TanFechaFin.HasValue ? tanda.TanFechaFin.Value.ToString("dd/MM/yyyy") : "—")
+                                    </span>
+                                }
+                            </p>
+                        </div>
+
+                        @* Controles de gestión operativa para cada registro. *@
+                        <div class="tanda-admin-actions">
+
+                            @* Gestión de la visibilidad pública de la tanda mediante solicitud POST. *@
+                            <form asp-action="ToggleVisibilidad" asp-route-id="@tanda.TandaId" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                @if (tanda.TanVisible)
+                                {
+                                    <button type="submit" class="btn-toggle-oculto" title="Ocultar de la vista pública">
+                                        <i class="fa-solid fa-eye-slash me-1"></i> Ocultar
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn-toggle-visible" title="Habilitar en la vista pública">
+                                        <i class="fa-solid fa-eye me-1"></i> Mostrar
+                                    </button>
+                                }
+                            </form>
+
+                            <a asp-action="Edit" asp-route-id="@tanda.TandaId" class="btn-secondary-drippin">
+                                <i class="fa-solid fa-pen me-1"></i> Editar
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@tanda.TandaId" class="btn-delete-drippin">
+                                <i class="fa-solid fa-trash me-1"></i> Eliminar
+                            </a>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="mt-4">
+            <a asp-controller="Inicio" asp-action="PanelAdmin" class="btn-back-drippin">
+                <i class="fa-solid fa-arrow-left me-1"></i> Volver al Panel
+            </a>
+        </div>
+
+    </div>
+</div>

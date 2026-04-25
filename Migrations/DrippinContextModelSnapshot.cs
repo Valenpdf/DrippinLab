@@ -148,12 +148,17 @@ namespace Drippin.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("proTandaId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("prodCreacion")
                         .HasColumnType("datetime2");
 
                     b.HasKey("proId");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("proTandaId");
 
                     b.ToTable("Producto");
                 });
@@ -187,6 +192,32 @@ namespace Drippin.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Drippin.Models.Tanda", b =>
+                {
+                    b.Property<int>("TandaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TandaId"));
+
+                    b.Property<DateTime?>("TanFechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("TanFechaInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TanNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TanVisible")
+                        .HasColumnType("bit");
+
+                    b.HasKey("TandaId");
+
+                    b.ToTable("Tanda");
+                });
+
             modelBuilder.Entity("Drippin.Models.Usuario", b =>
                 {
                     b.Property<int>("IdUsuario")
@@ -206,22 +237,26 @@ namespace Drippin.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UsApellido")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UsCorreo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UsNombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdUsuario");
 
@@ -266,7 +301,13 @@ namespace Drippin.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Drippin.Models.Tanda", "Tanda")
+                        .WithMany("Productos")
+                        .HasForeignKey("proTandaId");
+
                     b.Navigation("Categoria");
+
+                    b.Navigation("Tanda");
                 });
 
             modelBuilder.Entity("Drippin.Models.Usuario", b =>
@@ -289,6 +330,11 @@ namespace Drippin.Migrations
             modelBuilder.Entity("Drippin.Models.Role", b =>
                 {
                     b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("Drippin.Models.Tanda", b =>
+                {
+                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("Drippin.Models.Usuario", b =>
