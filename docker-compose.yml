@@ -6,10 +6,10 @@ services:
     container_name: drippin-db
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=${SA_PASSWORD}
+      - SA_PASSWORD=${SA_PASSWORD:?SA_PASSWORD is required}
       - MSSQL_PID=Developer
     ports:
-      - "${DB_PORT:-}"  # Leave empty to not expose, or set to "1433:1433"
+      - "${DB_PORT:-}"
     volumes:
       - sqlserver_data:/var/opt/mssql
     healthcheck:
@@ -28,13 +28,13 @@ services:
       dockerfile: Dockerfile
     container_name: drippin-web
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=${ASPNETCORE_URLS:-http://+:80}
-      - ConnectionStrings__DefaultConnection=Server=db;Database=DrippinDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
-      - EmailSettings__Host=${EMAILSETTINGS__HOST:=smtp.gmail.com}
-      - EmailSettings__Port=${EMAILSETTINGS__PORT:=587}
-      - EmailSettings__Username=${GMAIL_USERNAME}
-      - EmailSettings__Password=${GMAIL_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Server=db;Database=DrippinDB;User Id=sa;Password=${SA_PASSWORD:?SA_PASSWORD is required};TrustServerCertificate=True
+      - EmailSettings__Host=${EMAILSETTINGS__HOST:-smtp.gmail.com}
+      - EmailSettings__Port=${EMAILSETTINGS__PORT:-587}
+      - EmailSettings__Username=${GMAIL_USERNAME:?GMAIL_USERNAME is required}
+      - EmailSettings__Password=${GMAIL_PASSWORD:?GMAIL_PASSWORD is required}
       - EmailSettings__SenderName=${EMAILSETTINGS__SENDERNAME:-Drippin Shop}
     ports:
       - "${WEB_PORT:-5000}:80"
