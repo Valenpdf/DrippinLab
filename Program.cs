@@ -49,6 +49,19 @@ builder.Services.AddSession(options => // Configuración de la sesión
 
 var app = builder.Build(); /* construye la aplicación usando los servicios definidos anteriormente */
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DrippinContext>();
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

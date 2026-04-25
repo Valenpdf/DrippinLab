@@ -1,0 +1,56 @@
+# Git
+.git
+.gitignore
+
+# Build outputs
+bin/
+obj/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Test results
+TestResults/
+*.trx
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+*.md
+README*
+LICENSE
+
+# Sample configs (we have the real appsettings.json now)
+appsettings_ejemplo*.json
+
+# Local development files
+wwwroot/images/drippin/
+wwwroot/images/ejemplo*.jpg
+!wwwroot/images/drippin/.gitkeep
+!wwwroot/images/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.*
