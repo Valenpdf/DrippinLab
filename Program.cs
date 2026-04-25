@@ -59,6 +59,11 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "An error occurred while migrating the database.");
+
+        if (!app.Environment.IsDevelopment())
+        {
+            throw;
+        }
     }
 }
 
