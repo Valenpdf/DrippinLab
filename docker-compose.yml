@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -9,7 +7,7 @@ services:
       - SA_PASSWORD=${SA_PASSWORD:?SA_PASSWORD is required}
       - MSSQL_PID=Developer
     ports:
-      - "${DB_PORT:-}"
+      - ${DB_PORT:-1433}:1433
     volumes:
       - sqlserver_data:/var/opt/mssql
     healthcheck:
@@ -33,8 +31,8 @@ services:
       - ConnectionStrings__DefaultConnection=Server=db;Database=DrippinDB;User Id=sa;Password=${SA_PASSWORD:?SA_PASSWORD is required};TrustServerCertificate=True
       - EmailSettings__Host=${EMAILSETTINGS__HOST:-smtp.gmail.com}
       - EmailSettings__Port=${EMAILSETTINGS__PORT:-587}
-      - EmailSettings__Username=${GMAIL_USERNAME:?GMAIL_USERNAME is required}
-      - EmailSettings__Password=${GMAIL_PASSWORD:?GMAIL_PASSWORD is required}
+      - EmailSettings__Username=${GMAIL_USERNAME:-}
+      - EmailSettings__Password=${GMAIL_PASSWORD:-}
       - EmailSettings__SenderName=${EMAILSETTINGS__SENDERNAME:-Drippin Shop}
     ports:
       - "${WEB_PORT:-5000}:80"
