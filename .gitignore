@@ -22,3 +22,7 @@ wwwroot/lib/
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Configuración local
+appsettings.json
+appsettings.Development.json
